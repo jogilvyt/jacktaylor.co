@@ -1,13 +1,12 @@
-<!-- Summary: Put your summary here -->
+<!-- Summary: Put what you've changed here -->
 
-## Test Plan
+## How to test
 
 <!-- What steps need to be taken to verify this works as expected? -->
 
 ## Checklist
 
 - [ ] Tests updated
-- [ ] Docs updated
 
 ## Screenshots
 
