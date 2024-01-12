@@ -130,6 +130,7 @@ app.use(
 				'script-src': [
 					"'strict-dynamic'",
 					"'self'",
+					"'unsafe-eval'",
 					// @ts-expect-error
 					(_, res) => `'nonce-${res.locals.cspNonce}'`,
 				],

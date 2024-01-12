@@ -180,6 +180,7 @@ function App() {
 					<nav>
 						<div className="flex flex-wrap items-center justify-between gap-4 sm:flex-nowrap md:gap-8">
 							<Link to="/">Jack Taylor</Link>
+							<Link to="/blog">Blog</Link>
 						</div>
 					</nav>
 				</header>
