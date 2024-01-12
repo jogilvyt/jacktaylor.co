@@ -4,15 +4,17 @@ async function refreshContentCache() {
 	const [authToken] = process.argv.slice(2)
 
 	try {
-		await fetch(`${hostname}/action/cache-content`, {
+		console.log('🚀 Calling content cache endpoint...')
+		await fetch(`${hostname}/action/refresh-content-cache`, {
 			method: 'POST',
 			headers: {
 				auth: authToken,
 				'Content-Type': 'application/json',
 			},
 		})
+		console.log('🎉 Content cache refreshed!')
 	} catch (e) {
-		console.log('Something went wrong caching the content', e)
+		console.log('😱 Whoops! Unable to call content cache endpoint.', e)
 		throw new Error(e)
 	}
 }
