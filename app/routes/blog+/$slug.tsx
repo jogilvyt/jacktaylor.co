@@ -1,6 +1,6 @@
 import { json, type LoaderFunctionArgs } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
-import { getMDXComponent } from 'mdx-bundler/client/index.js'
+import { getMDXComponent } from 'mdx-bundler/client'
 import * as React from 'react'
 import { LazyImage } from '#app/components/lazy-image'
 import { prisma } from '#app/utils/db.server'
