@@ -23,7 +23,9 @@ model Post {
   updatedAt DateTime  @updatedAt
   slug      String    @unique
   content   String
+
   postMeta  PostMeta?
+  image     PostImage?
 }
 
 model PostMeta {
@@ -48,4 +50,17 @@ model Category {
   updatedAt  DateTime  @updatedAt
   name       String    @unique
   posts      PostMeta[]
+}
+
+model PostImage {
+  id          String @id @default(uuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  contentType String
+  blob        Bytes
+  dataUri     String?
+
+  post        Post @relation(fields: [postId], references: [id])
+  postId      String @unique
 }

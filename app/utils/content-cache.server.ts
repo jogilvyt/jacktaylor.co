@@ -1,6 +1,12 @@
+import { Blob } from 'buffer'
 import { readFileSync, readdirSync, statSync } from 'fs'
+import path from 'path'
+import { getPixels } from '@unpic/pixels'
+import { blurhashToDataUri } from '@unpic/placeholder'
+import { encode } from 'blurhash'
 import { hashElement } from 'folder-hash'
 import { bundleMDX } from 'mdx-bundler'
+import mime from 'mime'
 import { z } from 'zod'
 import { prisma } from './db.server'
 
@@ -21,40 +27,33 @@ export async function generateContentCache() {
 
 	try {
 		const newHash = await prisma.$transaction(async tx => {
-			// delete all posts, post meta and categories before refreshing cache
+			// delete all posts, post meta, post images and categories before refreshing cache
 			await tx.category.deleteMany({})
+			await tx.postImage.deleteMany({})
 			await tx.postMeta.deleteMany({})
 			await tx.post.deleteMany({})
 
 			for (const mdxPage of mdxPages) {
 				const source = readFileSync(mdxPage, 'utf8')
-				const { frontmatter } = await bundleMDX({
-					source,
-					cwd: process.cwd(),
-				})
-
-				const parsedFrontmatter = frontmatterSchema.safeParse(frontmatter)
-				if (!parsedFrontmatter.success) {
-					console.error(
-						'Invalid frontmatter:',
-						parsedFrontmatter.error.flatten().fieldErrors,
-					)
-					throw new Error('Invalid frontmatter')
-				}
-
 				const {
 					slug,
 					title,
+					categories,
 					date,
 					description,
 					imageUrl,
 					imageCredit,
 					imageAlt,
-				} = parsedFrontmatter.data
+				} = await parseFrontmatter(source)
 
-				await tx.post.upsert({
-					where: { slug },
-					create: {
+				const imagePath = path.join(path.dirname(mdxPage), imageUrl)
+
+				const buffer = readFileSync(imagePath)
+				const type = mime.getType(imagePath)
+				const blob = new Blob([buffer])
+
+				const post = await tx.post.create({
+					data: {
 						slug,
 						content: source,
 						postMeta: {
@@ -67,35 +66,10 @@ export async function generateContentCache() {
 								imageCredit,
 								imageAlt,
 								categories: {
-									connectOrCreate: parsedFrontmatter.data.categories.map(
-										category => ({
-											where: { name: category },
-											create: { name: category },
-										}),
-									),
-								},
-							},
-						},
-					},
-					update: {
-						slug,
-						content: source,
-						postMeta: {
-							update: {
-								slug,
-								title,
-								date,
-								description,
-								imageUrl,
-								imageCredit,
-								imageAlt,
-								categories: {
-									connectOrCreate: parsedFrontmatter.data.categories.map(
-										category => ({
-											where: { name: category },
-											create: { name: category },
-										}),
-									),
+									connectOrCreate: categories.map(category => ({
+										where: { name: category },
+										create: { name: category },
+									})),
 								},
 							},
 						},
@@ -103,14 +77,15 @@ export async function generateContentCache() {
 					select: { id: true },
 				})
 
-				// for (const category of parsedFrontmatter.data.categories) {
-				// 	await tx.category.upsert({
-				// 		where: { name: category },
-				// 		create: { name: category, posts: { connect: { id: post.id } } },
-				// 		update: { posts: { connect: { id: post.id } } },
-				// 		select: { id: true },
-				// 	})
-				// }
+				await tx.postImage.create({
+					data: {
+						blob: Buffer.from(await blob.arrayBuffer()),
+						contentType: type ?? '',
+						post: {
+							connect: { id: post.id },
+						},
+					},
+				})
 			}
 
 			const contentHash = await hashElement(process.cwd() + '/content')
@@ -125,6 +100,7 @@ export async function generateContentCache() {
 			})
 			return newHash
 		})
+		await generateBlurHashes(mdxPages)
 
 		return newHash
 	} catch (err) {
@@ -144,4 +120,49 @@ function getFiles(dir: string, filePaths: string[] = []) {
 		}
 	}
 	return filePaths
+}
+
+async function parseFrontmatter(mdxPage: string) {
+	const { frontmatter } = await bundleMDX({
+		source: mdxPage,
+		cwd: process.cwd(),
+	})
+
+	const parsedFrontmatter = frontmatterSchema.safeParse(frontmatter)
+	if (!parsedFrontmatter.success) {
+		console.error(
+			'Invalid frontmatter:',
+			parsedFrontmatter.error.flatten().fieldErrors,
+		)
+		throw new Error('Invalid frontmatter')
+	}
+
+	return parsedFrontmatter.data
+}
+
+async function generateBlurHashes(mdxPages: string[]) {
+	for (const mdxPage of mdxPages) {
+		const source = readFileSync(mdxPage, 'utf8')
+		const { imageUrl, slug } = await parseFrontmatter(source)
+		const imagePath = path.join(path.dirname(mdxPage), imageUrl)
+		const buffer = readFileSync(imagePath)
+		const imgData = await getPixels(buffer)
+		const data = Uint8ClampedArray.from(imgData.data)
+		const blurhash = encode(data, imgData.width, imgData.height, 4, 4)
+		const dataUri = blurhashToDataUri(blurhash)
+		const post = await prisma.post.findFirst({
+			where: { slug },
+		})
+		if (!post?.id) {
+			throw new Error('Post not found')
+		}
+		await prisma.postImage.update({
+			where: {
+				postId: post.id,
+			},
+			data: {
+				dataUri,
+			},
+		})
+	}
 }

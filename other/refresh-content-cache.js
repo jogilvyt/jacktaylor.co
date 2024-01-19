@@ -5,16 +5,19 @@ async function refreshContentCache() {
 
 	try {
 		console.log('🚀 Calling content cache endpoint...')
-		await fetch(`${hostname}/action/refresh-content-cache`, {
+		const response = await fetch(`${hostname}/action/refresh-content-cache`, {
 			method: 'POST',
 			headers: {
 				auth: authToken,
 				'Content-Type': 'application/json',
 			},
 		})
+		if (response.status === 500) {
+			throw new Error('Error when calling content cache endpoint.')
+		}
 		console.log('🎉 Content cache refreshed!')
 	} catch (e) {
-		console.log('😱 Whoops! Unable to call content cache endpoint.', e)
+		console.log('😱 Whoops! Unable to call content cache endpoint.')
 		throw new Error(e)
 	}
 }

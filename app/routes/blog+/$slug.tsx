@@ -2,6 +2,7 @@ import { json, type LoaderFunctionArgs } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
 import { getMDXComponent } from 'mdx-bundler/client'
 import * as React from 'react'
+import { LazyImage } from '#app/components/lazy-image'
 import { prisma } from '#app/utils/db.server'
 import { getMdxPage } from '#app/utils/mdx.server'
 
@@ -10,10 +11,17 @@ export async function loader({ params }: LoaderFunctionArgs) {
 		where: { slug: params.slug },
 		select: {
 			content: true,
+			image: {
+				select: {
+					id: true,
+					dataUri: true,
+				},
+			},
 			postMeta: {
 				select: {
 					title: true,
 					description: true,
+					imageAlt: true,
 				},
 			},
 		},
@@ -37,6 +45,15 @@ export default function BlogPostRoute() {
 	return (
 		<main>
 			<h1>{data.postMeta?.title}</h1>
+			{data.image?.id ? (
+				<LazyImage
+					dataUri={data.image?.dataUri}
+					imageId={data.image?.id ?? ''}
+					alt={data.postMeta?.imageAlt ?? ''}
+					width={1000}
+					height={600}
+				/>
+			) : null}
 			<Component />
 		</main>
 	)

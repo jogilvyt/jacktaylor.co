@@ -7,8 +7,8 @@ import {
 	Form,
 	useSearchParams,
 } from '@remix-run/react'
-import * as React from 'react'
 import { z } from 'zod'
+import { Badge } from '#app/components/ui/badge'
 import { ToggleGroup, ToggleGroupItem } from '#app/components/ui/toggle-group'
 import { prisma } from '#app/utils/db.server'
 
@@ -19,20 +19,22 @@ const filterSchema = z.object({
 export async function loader({ request }: LoaderFunctionArgs) {
 	const url = new URL(request.url)
 	const filters = parse(url.searchParams, { schema: filterSchema })
-	console.log(filters)
 
 	const getPosts = prisma.post.findMany({
-		orderBy: { updatedAt: 'desc' },
-		take: 20,
+		orderBy: {
+			postMeta: {
+				date: 'desc',
+			},
+		},
 		where: {
 			postMeta: {
-				categories: {
-					some: {
-						name: {
-							in: filters.value?.categories ?? undefined,
+				AND: filters.value?.categories?.map(category => ({
+					categories: {
+						some: {
+							name: category,
 						},
 					},
-				},
+				})),
 			},
 		},
 		select: {
@@ -56,13 +58,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
 				where: {
 					post: {
 						postMeta: {
-							categories: {
-								some: {
-									name: {
-										in: filters.value?.categories ?? undefined,
+							AND: filters.value?.categories?.map(category => ({
+								categories: {
+									some: {
+										name: category,
 									},
 								},
-							},
+							})),
 						},
 					},
 				},
@@ -106,7 +108,8 @@ export default function BlogPostsRoute() {
 							value={category.name}
 							disabled={category.posts.length === 0}
 						>
-							{category.name} ({category.posts.length})
+							{category.name}{' '}
+							<Badge variant="outline">{category.posts.length}</Badge>
 						</ToggleGroupItem>
 					))}
 				</ToggleGroup>

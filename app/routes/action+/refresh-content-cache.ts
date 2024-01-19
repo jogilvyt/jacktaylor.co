@@ -17,20 +17,20 @@ export async function action({ request }: DataFunctionArgs) {
 
 		if (!dbContentHash?.hash) {
 			// if there is no hash in the database, we should generate the content cache
-			console.log(
-				'😶‍🌫️ No previously generated content cache found. Generating content cache...',
-			)
+			console.log('😶‍🌫️ No previously generated content cache found')
+			console.time('✨ Generating content cache for the first time...')
 			await generateContentCache()
+			console.timeEnd('✨ Generating content cache for the first time...')
 			return new Response('Content cache generated', { status: 200 })
 		}
 
 		const currentContentHash = await hashElement(process.cwd() + '/content')
 		if (dbContentHash.hash !== currentContentHash.hash) {
 			// if the hash in the database is different from the current hash, we should generate the content cache
-			console.log(
-				'📝 Previously generated content cache is out of date. Generating content cache...',
-			)
+			console.log('📝 Previously generated content cache is out of date')
+			console.time('✨ Generating content cache...')
 			await generateContentCache()
+			console.timeEnd('✨ Generating content cache...')
 			console.log('✅ Updated content cache generated')
 			return new Response('Content cache generated', { status: 200 })
 		}
