@@ -1,9 +1,8 @@
 import { json, type LoaderFunctionArgs } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
-import { getMDXComponent } from 'mdx-bundler/client'
-import * as React from 'react'
 import { LazyImage } from '#app/components/lazy-image'
 import { prisma } from '#app/utils/db.server'
+import { useMdxComponent } from '#app/utils/mdx'
 import { getMdxPage } from '#app/utils/mdx.server'
 
 export async function loader({ params }: LoaderFunctionArgs) {
@@ -38,9 +37,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
 
 export default function BlogPostRoute() {
 	const data = useLoaderData<typeof loader>()
-	const Component = React.useMemo(() => {
-		return getMDXComponent(data.content)
-	}, [data.content])
+	const Component = useMdxComponent({ content: data.content })
 
 	return (
 		<main>
