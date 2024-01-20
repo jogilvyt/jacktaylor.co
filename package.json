@@ -93,7 +93,7 @@
     "isbot": "^3.7.1",
     "litefs-js": "^1.1.2",
     "lru-cache": "^10.1.0",
-    "mdx-bundler": "^10.0.1",
+    "mdx-bundler": "^9.2.1",
     "mime": "^4.0.1",
     "morgan": "^1.10.0",
     "prisma": "^5.6.0",
