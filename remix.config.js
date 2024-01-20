@@ -11,7 +11,7 @@ export default {
 	tailwind: true,
 	postcss: true,
 	watchPaths: ['./tailwind.config.ts'],
-	serverDependenciesToBundle: [/^mdx-bundler.*/],
+	serverDependenciesToBundle: [/^mdx-bundler\/dist.*/],
 	routes: async defineRoutes => {
 		return flatRoutes('routes', defineRoutes, {
 			ignoredRouteFiles: [
