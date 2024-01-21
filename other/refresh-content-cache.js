@@ -1,7 +1,11 @@
 async function refreshContentCache() {
-	// TODO: change this when running outside of local env
-	const hostname = 'http://localhost:3000'
-	const [authToken] = process.argv.slice(2)
+	const hostname =
+		process.env.GITHUB_REF_NAME === 'dev'
+			? 'https://jacktaylor-co-ed11-staging.fly.dev'
+			: process.env.GITHUB_REF_NAME === 'main'
+			  ? 'https://jacktaylor.co'
+			  : 'http://localhost:3000'
+	const authToken = process.env.CACHE_CONTENT_SECRET
 
 	try {
 		console.log('🚀 Calling content cache endpoint...')
