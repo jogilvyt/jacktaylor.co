@@ -7,7 +7,7 @@ export async function action({ request }: DataFunctionArgs) {
 	try {
 		if (request.headers.get('auth') !== process.env.CACHE_CONTENT_SECRET) {
 			// The token is invalid, so redirect to another site
-			console.log('❌ Nope! Invalid token')
+			console.log('❌ Nope! Invalid token: ', request.headers.get('auth'))
 			return redirect('https:/www.google.com/')
 		}
 
