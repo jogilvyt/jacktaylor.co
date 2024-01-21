@@ -28,6 +28,7 @@ import { GeneralErrorBoundary } from './components/error-boundary.tsx'
 import { useToast } from './components/toaster.tsx'
 import { Icon, href as iconsHref } from './components/ui/icon.tsx'
 import { Toaster } from './components/ui/sonner.tsx'
+import fontStyleSheetUrl from './styles/fonts.css'
 import tailwindStyleSheetUrl from './styles/tailwind.css'
 import { ClientHintCheck, getHints, useHints } from './utils/client-hints.tsx'
 import { csrf } from './utils/csrf.server.ts'
@@ -62,6 +63,8 @@ export const links: LinksFunction = () => {
 		{ rel: 'icon', type: 'image/svg+xml', href: '/favicons/favicon.svg' },
 		{ rel: 'stylesheet', href: tailwindStyleSheetUrl },
 		cssBundleHref ? { rel: 'stylesheet', href: cssBundleHref } : null,
+		{ rel: 'preload', href: fontStyleSheetUrl, as: 'style' },
+		{ rel: 'stylesheet', href: fontStyleSheetUrl },
 	].filter(Boolean)
 }
 
