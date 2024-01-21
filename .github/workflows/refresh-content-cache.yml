@@ -21,4 +21,4 @@ jobs:
       - name: 🚀 Refresh Content
         run: node ./other/refresh-content-cache.js
         env:
-          REFRESH_CACHE_SECRET: ${{ secrets.CACHE_CONTENT_SECRET }}
+          CACHE_CONTENT_SECRET: ${{ secrets.CACHE_CONTENT_SECRET }}
