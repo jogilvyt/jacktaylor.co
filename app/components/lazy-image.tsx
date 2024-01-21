@@ -9,6 +9,7 @@ interface LazyImageProps {
 	width?: number
 	height?: number
 	className?: string
+	sizes?: string
 }
 
 export function LazyImage({
@@ -18,6 +19,7 @@ export function LazyImage({
 	width,
 	height,
 	className,
+	sizes,
 }: LazyImageProps) {
 	const imgRef = React.useRef<HTMLImageElement>(null)
 	const [isLoaded, setIsLoaded] = React.useState(false)
@@ -56,7 +58,7 @@ export function LazyImage({
 
 	return (
 		<div
-			className={cn('relative overflow-hidden', className)}
+			className={cn('relative max-w-full overflow-hidden', className)}
 			style={{ width, height }}
 		>
 			{dataUri ? (
@@ -77,6 +79,7 @@ export function LazyImage({
 				className={clsx(`cover relative z-10 transition-opacity`, {
 					'opacity-0': !isLoaded,
 				})}
+				sizes={sizes}
 			/>
 		</div>
 	)
