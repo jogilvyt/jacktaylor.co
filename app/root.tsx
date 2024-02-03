@@ -13,6 +13,7 @@ import {
 	Links,
 	LiveReload,
 	Meta,
+	NavLink,
 	Outlet,
 	Scripts,
 	ScrollRestoration,
@@ -21,6 +22,7 @@ import {
 	useLoaderData,
 } from '@remix-run/react'
 import { withSentry } from '@sentry/remix'
+import clsx from 'clsx'
 import { AuthenticityTokenProvider } from 'remix-utils/csrf/react'
 import { HoneypotProvider } from 'remix-utils/honeypot/react'
 import { z } from 'zod'
@@ -179,11 +181,32 @@ function App() {
 	return (
 		<Document nonce={nonce} theme={theme} env={data.ENV}>
 			<div className="flex h-screen flex-col justify-between">
-				<header className="container py-6">
+				<header className="container mt-16">
 					<nav>
 						<div className="flex flex-wrap items-center justify-between gap-4 sm:flex-nowrap md:gap-8">
-							<Link to="/">Jack Taylor</Link>
-							<Link to="/blog">Blog</Link>
+							<NavLink
+								to="/"
+								className={({ isActive }) =>
+									clsx(
+										`relative text-3xl font-semibold before:absolute before:-bottom-0 before:h-1 before:w-full before:origin-left before:scale-x-0 before:bg-accent-foreground before:transition-transform before:content-[''] hover:before:scale-x-100`,
+										isActive && 'after:scale-x-100',
+									)
+								}
+							>
+								<h1 className="relative z-10">Jack Taylor</h1>
+							</NavLink>
+							<ul className="flex items-center gap-x-16 text-xl">
+								<li>
+									<NavLink to="/about">About</NavLink>
+								</li>
+								<li>
+									<NavLink to="/blog">Blog</NavLink>
+								</li>
+								<li>
+									<NavLink to="/contact">Contact</NavLink>
+								</li>
+							</ul>
+							<ThemeSwitch userPreference={data.requestInfo.userPrefs.theme} />
 						</div>
 					</nav>
 				</header>
@@ -194,7 +217,6 @@ function App() {
 
 				<div className="container flex justify-between pb-5">
 					<Link to="/">Jack Taylor</Link>
-					<ThemeSwitch userPreference={data.requestInfo.userPrefs.theme} />
 				</div>
 			</div>
 			<Toaster closeButton position="top-center" theme={theme} />
