@@ -45,7 +45,7 @@ export default function BlogPostRoute() {
 			{data.image?.id ? (
 				<LazyImage
 					dataUri={data.image?.dataUri}
-					imageId={data.image?.id ?? ''}
+					imageUrl={`/resources/post-image/${data.image?.id ?? ''}`}
 					alt={data.postMeta?.imageAlt ?? ''}
 					width={1000}
 					height={600}

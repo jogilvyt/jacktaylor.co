@@ -1,377 +1,127 @@
 @font-face {
-	font-family: 'Poppins';
+	font-family: 'Helvetica Neue';
 	src:
-		url('/fonts/Poppins-Black.woff2') format('woff2'),
-		url('/fonts/Poppins-Black.woff') format('woff');
-	font-weight: 900;
-	font-style: normal;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: 'Poppins';
-	src:
-		url('/fonts/Poppins-ExtraLight.woff2') format('woff2'),
-		url('/fonts/Poppins-ExtraLight.woff') format('woff');
-	font-weight: 200;
-	font-style: normal;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: 'Poppins';
-	src:
-		url('/fonts/Poppins-ExtraLightItalic.woff2') format('woff2'),
-		url('/fonts/Poppins-ExtraLightItalic.woff') format('woff');
-	font-weight: 200;
-	font-style: italic;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: 'Poppins';
-	src:
-		url('/fonts/Poppins-Thin.woff2') format('woff2'),
-		url('/fonts/Poppins-Thin.woff') format('woff');
-	font-weight: 100;
-	font-style: normal;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: 'Poppins';
-	src:
-		url('/fonts/Poppins-ThinItalic.woff2') format('woff2'),
-		url('/fonts/Poppins-ThinItalic.woff') format('woff');
-	font-weight: 100;
-	font-style: italic;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: 'Poppins';
-	src:
-		url('/fonts/Poppins-BoldItalic.woff2') format('woff2'),
-		url('/fonts/Poppins-BoldItalic.woff') format('woff');
-	font-weight: bold;
-	font-style: italic;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: 'Poppins';
-	src:
-		url('/fonts/Poppins-Bold.woff2') format('woff2'),
-		url('/fonts/Poppins-Bold.woff') format('woff');
+		url('/fonts/HelveticaNeue-Bold.woff2') format('woff2'),
+		url('/fonts/HelveticaNeue-Bold.woff') format('woff');
 	font-weight: bold;
 	font-style: normal;
 	font-display: swap;
 }
 
 @font-face {
-	font-family: 'Poppins';
+	font-family: 'Helvetica Neue';
 	src:
-		url('/fonts/Poppins-Light.woff2') format('woff2'),
-		url('/fonts/Poppins-Light.woff') format('woff');
-	font-weight: 300;
-	font-style: normal;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: 'Poppins';
-	src:
-		url('/fonts/Poppins-MediumItalic.woff2') format('woff2'),
-		url('/fonts/Poppins-MediumItalic.woff') format('woff');
-	font-weight: 500;
-	font-style: italic;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: 'Poppins';
-	src:
-		url('/fonts/Poppins-BlackItalic.woff2') format('woff2'),
-		url('/fonts/Poppins-BlackItalic.woff') format('woff');
-	font-weight: 900;
-	font-style: italic;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: 'Poppins';
-	src:
-		url('/fonts/Poppins-Italic.woff2') format('woff2'),
-		url('/fonts/Poppins-Italic.woff') format('woff');
+		url('/fonts/HelveticaNeue-MediumItalic.woff2') format('woff2'),
+		url('/fonts/HelveticaNeue-MediumItalic.woff') format('woff');
 	font-weight: normal;
 	font-style: italic;
 	font-display: swap;
 }
 
 @font-face {
-	font-family: 'Poppins';
+	font-family: 'Helvetica Neue';
 	src:
-		url('/fonts/Poppins-SemiBold.woff2') format('woff2'),
-		url('/fonts/Poppins-SemiBold.woff') format('woff');
-	font-weight: 600;
-	font-style: normal;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: 'Poppins';
-	src:
-		url('/fonts/Poppins-ExtraBold.woff2') format('woff2'),
-		url('/fonts/Poppins-ExtraBold.woff') format('woff');
-	font-weight: bold;
-	font-style: normal;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: 'Poppins';
-	src:
-		url('/fonts/Poppins-LightItalic.woff2') format('woff2'),
-		url('/fonts/Poppins-LightItalic.woff') format('woff');
-	font-weight: 300;
-	font-style: italic;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: 'Poppins';
-	src:
-		url('/fonts/Poppins-Medium.woff2') format('woff2'),
-		url('/fonts/Poppins-Medium.woff') format('woff');
+		url('/fonts/HelveticaNeue-Medium.woff2') format('woff2'),
+		url('/fonts/HelveticaNeue-Medium.woff') format('woff');
 	font-weight: 500;
 	font-style: normal;
 	font-display: swap;
 }
 
 @font-face {
-	font-family: 'Poppins';
+	font-family: 'Helvetica Neue';
 	src:
-		url('/fonts/Poppins-SemiBoldItalic.woff2') format('woff2'),
-		url('/fonts/Poppins-SemiBoldItalic.woff') format('woff');
-	font-weight: 600;
+		url('/fonts/HelveticaNeue-BoldItalic.woff2') format('woff2'),
+		url('/fonts/HelveticaNeue-BoldItalic.woff') format('woff');
+	font-weight: bold;
 	font-style: italic;
 	font-display: swap;
 }
 
 @font-face {
-	font-family: 'Poppins';
+	font-family: 'Helvetica Neue';
 	src:
-		url('/fonts/Poppins-Regular.woff2') format('woff2'),
-		url('/fonts/Poppins-Regular.woff') format('woff');
+		url('/fonts/HelveticaNeue-Light.woff2') format('woff2'),
+		url('/fonts/HelveticaNeue-Light.woff') format('woff');
+	font-weight: 300;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Helvetica Neue';
+	src:
+		url('/fonts/HelveticaNeue-LightItalic.woff2') format('woff2'),
+		url('/fonts/HelveticaNeue-LightItalic.woff') format('woff');
+	font-weight: 300;
+	font-style: italic;
+	font-display: swap;
+}
+
+/* Fallback fonts generated by fontpie-from-css  */
+
+@font-face {
+	font-family: 'Helvetica Neue Fallback';
+	font-style: normal;
+	font-weight: bold;
+	src: local('Arial Bold');
+	ascent-override: 97.45%;
+	descent-override: 21.79%;
+	line-gap-override: 5.7%;
+	size-adjust: 100.05%;
+}
+
+@font-face {
+	font-family: 'Helvetica Neue Fallback';
+	font-style: italic;
 	font-weight: normal;
-	font-style: normal;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: 'Poppins';
-	src:
-		url('/fonts/Poppins-ExtraBoldItalic.woff2') format('woff2'),
-		url('/fonts/Poppins-ExtraBoldItalic.woff') format('woff');
-	font-weight: bold;
-	font-style: italic;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: 'Poppins Fallback';
-	font-style: normal;
-	font-weight: 900;
-	src: local('Arial Bold');
-	ascent-override: 95.18%;
-	descent-override: 31.73%;
-	line-gap-override: 9.07%;
-	size-adjust: 110.31%;
-}
-
-@font-face {
-	font-family: 'Poppins Fallback';
-	font-style: normal;
-	font-weight: 200;
-	src: local('Arial');
-	ascent-override: 94.89%;
-	descent-override: 31.63%;
-	line-gap-override: 9.04%;
-	size-adjust: 110.66%;
-}
-
-@font-face {
-	font-family: 'Poppins Fallback';
-	font-style: italic;
-	font-weight: 200;
 	src: local('Arial Italic');
-	ascent-override: 94.6%;
-	descent-override: 31.53%;
-	line-gap-override: 9.01%;
-	size-adjust: 110.99%;
+	ascent-override: 95.56%;
+	descent-override: 21.27%;
+	line-gap-override: 2.8%;
+	size-adjust: 100.14%;
 }
 
 @font-face {
-	font-family: 'Poppins Fallback';
-	font-style: normal;
-	font-weight: 100;
-	src: local('Arial');
-	ascent-override: 96.07%;
-	descent-override: 32.02%;
-	line-gap-override: 9.15%;
-	size-adjust: 109.3%;
-}
-
-@font-face {
-	font-family: 'Poppins Fallback';
-	font-style: italic;
-	font-weight: 100;
-	src: local('Arial Italic');
-	ascent-override: 96.07%;
-	descent-override: 32.02%;
-	line-gap-override: 9.15%;
-	size-adjust: 109.3%;
-}
-
-@font-face {
-	font-family: 'Poppins Fallback';
-	font-style: italic;
-	font-weight: bold;
-	src: local('Arial Bold Italic');
-	ascent-override: 96.64%;
-	descent-override: 32.21%;
-	line-gap-override: 9.2%;
-	size-adjust: 108.65%;
-}
-
-@font-face {
-	font-family: 'Poppins Fallback';
-	font-style: normal;
-	font-weight: bold;
-	src: local('Arial Bold');
-	ascent-override: 97.12%;
-	descent-override: 32.37%;
-	line-gap-override: 9.25%;
-	size-adjust: 108.12%;
-}
-
-@font-face {
-	font-family: 'Poppins Fallback';
+	font-family: 'Helvetica Neue Fallback';
 	font-style: normal;
 	font-weight: 300;
 	src: local('Arial');
-	ascent-override: 93.76%;
-	descent-override: 31.25%;
-	line-gap-override: 8.93%;
-	size-adjust: 111.99%;
+	ascent-override: 92.95%;
+	descent-override: 20.69%;
+	line-gap-override: 2.76%;
+	size-adjust: 104.9%;
 }
 
 @font-face {
-	font-family: 'Poppins Fallback';
+	font-family: 'Helvetica Neue Fallback';
 	font-style: italic;
-	font-weight: 500;
-	src: local('Arial Italic');
-	ascent-override: 90.85%;
-	descent-override: 30.28%;
-	line-gap-override: 8.65%;
-	size-adjust: 115.58%;
-}
-
-@font-face {
-	font-family: 'Poppins Fallback';
-	font-style: italic;
-	font-weight: 900;
-	src: local('Arial Bold Italic');
-	ascent-override: 95.18%;
-	descent-override: 31.73%;
-	line-gap-override: 9.07%;
-	size-adjust: 110.31%;
-}
-
-@font-face {
-	font-family: 'Poppins Fallback';
-	font-style: italic;
-	font-weight: normal;
-	src: local('Arial Italic');
-	ascent-override: 92.06%;
-	descent-override: 30.69%;
-	line-gap-override: 8.77%;
-	size-adjust: 114.06%;
-}
-
-@font-face {
-	font-family: 'Poppins Fallback';
-	font-style: normal;
-	font-weight: 600;
-	src: local('Arial Bold');
-	ascent-override: 98.3%;
-	descent-override: 32.77%;
-	line-gap-override: 9.36%;
-	size-adjust: 106.82%;
-}
-
-@font-face {
-	font-family: 'Poppins Fallback';
-	font-style: normal;
 	font-weight: bold;
-	src: local('Arial Bold');
-	ascent-override: 96.13%;
-	descent-override: 32.04%;
-	line-gap-override: 9.16%;
-	size-adjust: 109.23%;
+	src: local('Arial Bold Italic');
+	ascent-override: 97.6%;
+	descent-override: 21.72%;
+	line-gap-override: 2.9%;
+	size-adjust: 99.9%;
 }
 
 @font-face {
-	font-family: 'Poppins Fallback';
-	font-style: italic;
+	font-family: 'Helvetica Neue Fallback';
+	font-style: normal;
 	font-weight: 300;
-	src: local('Arial Italic');
-	ascent-override: 93.23%;
-	descent-override: 31.08%;
-	line-gap-override: 8.88%;
-	size-adjust: 112.63%;
-}
-
-@font-face {
-	font-family: 'Poppins Fallback';
-	font-style: normal;
-	font-weight: 500;
 	src: local('Arial');
-	ascent-override: 91.82%;
-	descent-override: 30.61%;
-	line-gap-override: 8.74%;
-	size-adjust: 114.36%;
+	ascent-override: 99.55%;
+	descent-override: 21.93%;
+	line-gap-override: 2.99%;
+	size-adjust: 97.14%;
 }
 
 @font-face {
-	font-family: 'Poppins Fallback';
-	font-style: italic;
-	font-weight: 600;
-	src: local('Arial Bold Italic');
-	ascent-override: 97.52%;
-	descent-override: 32.51%;
-	line-gap-override: 9.29%;
-	size-adjust: 107.67%;
-}
-
-@font-face {
-	font-family: 'Poppins Fallback';
-	font-style: normal;
-	font-weight: normal;
-	src: local('Arial');
-	ascent-override: 92.83%;
-	descent-override: 30.94%;
-	line-gap-override: 8.84%;
-	size-adjust: 113.11%;
-}
-
-@font-face {
-	font-family: 'Poppins Fallback';
+	font-family: 'Helvetica Neue Fallback';
 	font-style: italic;
 	font-weight: bold;
 	src: local('Arial Bold Italic');
-	ascent-override: 95.88%;
-	descent-override: 31.96%;
-	line-gap-override: 9.13%;
-	size-adjust: 109.51%;
+	ascent-override: 106.44%;
+	descent-override: 23.84%;
+	line-gap-override: 3.13%;
+	size-adjust: 89.35%;
 }

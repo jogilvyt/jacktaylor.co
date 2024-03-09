@@ -5,7 +5,7 @@ import { cn } from '#app/utils/misc'
 interface LazyImageProps {
 	dataUri?: string | null
 	alt?: string
-	imageId: string
+	imageUrl: string
 	width?: number
 	height?: number
 	className?: string
@@ -15,7 +15,7 @@ interface LazyImageProps {
 export function LazyImage({
 	dataUri,
 	alt,
-	imageId,
+	imageUrl,
 	width,
 	height,
 	className,
@@ -52,7 +52,7 @@ export function LazyImage({
 		}
 	}, [])
 
-	if (!imageId) {
+	if (!imageUrl) {
 		return null
 	}
 
@@ -67,18 +67,21 @@ export function LazyImage({
 					alt=""
 					width={width}
 					height={height}
-					className="cover absolute bottom-0 left-0 right-0 top-0"
+					className="absolute bottom-0 left-0 right-0 top-0 h-full object-cover"
 				/>
 			) : null}
 			<img
 				ref={imgRef}
-				src={`/resources/post-image/${imageId}${queryString}`}
+				src={`${imageUrl}${queryString}`}
 				alt={alt ?? ''}
 				width={width}
 				height={height}
-				className={clsx(`cover relative z-10 transition-opacity`, {
-					'opacity-0': !isLoaded,
-				})}
+				className={clsx(
+					`relative z-10 h-full w-full object-cover transition-opacity`,
+					{
+						'opacity-0': !isLoaded,
+					},
+				)}
 				sizes={sizes}
 			/>
 		</div>

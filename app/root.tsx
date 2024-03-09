@@ -13,7 +13,6 @@ import {
 	Links,
 	LiveReload,
 	Meta,
-	NavLink,
 	Outlet,
 	Scripts,
 	ScrollRestoration,
@@ -22,11 +21,13 @@ import {
 	useLoaderData,
 } from '@remix-run/react'
 import { withSentry } from '@sentry/remix'
-import clsx from 'clsx'
+import { AnimatePresence, MotionConfig, motion } from 'framer-motion'
+import * as React from 'react'
 import { AuthenticityTokenProvider } from 'remix-utils/csrf/react'
 import { HoneypotProvider } from 'remix-utils/honeypot/react'
 import { z } from 'zod'
 import { GeneralErrorBoundary } from './components/error-boundary.tsx'
+import { Navigation } from './components/navigation.tsx'
 import { useToast } from './components/toaster.tsx'
 import { Icon, href as iconsHref } from './components/ui/icon.tsx'
 import { Toaster } from './components/ui/sonner.tsx'
@@ -181,31 +182,10 @@ function App() {
 	return (
 		<Document nonce={nonce} theme={theme} env={data.ENV}>
 			<div className="flex h-screen flex-col justify-between">
-				<header className="container mt-16">
+				<header className="container mt-8 lg:mt-16">
 					<nav>
 						<div className="flex flex-wrap items-center justify-between gap-4 sm:flex-nowrap md:gap-8">
-							<NavLink
-								to="/"
-								className={({ isActive }) =>
-									clsx(
-										`relative text-3xl font-semibold before:absolute before:-bottom-0 before:h-1 before:w-full before:origin-left before:scale-x-0 before:bg-accent-foreground before:transition-transform before:content-[''] hover:before:scale-x-100`,
-										isActive && 'after:scale-x-100',
-									)
-								}
-							>
-								<h1 className="relative z-10">Jack Taylor</h1>
-							</NavLink>
-							<ul className="flex items-center gap-x-16 text-xl">
-								<li>
-									<NavLink to="/about">About</NavLink>
-								</li>
-								<li>
-									<NavLink to="/blog">Blog</NavLink>
-								</li>
-								<li>
-									<NavLink to="/contact">Contact</NavLink>
-								</li>
-							</ul>
+							<Navigation />
 							<ThemeSwitch userPreference={data.requestInfo.userPrefs.theme} />
 						</div>
 					</nav>
@@ -229,7 +209,9 @@ function AppWithProviders() {
 	return (
 		<AuthenticityTokenProvider token={data.csrfToken}>
 			<HoneypotProvider {...data.honeyProps}>
-				<App />
+				<MotionConfig reducedMotion="user">
+					<App />
+				</MotionConfig>
 			</HoneypotProvider>
 		</AuthenticityTokenProvider>
 	)
@@ -279,21 +261,49 @@ function ThemeSwitch({ userPreference }: { userPreference?: Theme | null }) {
 	const mode = optimisticMode ?? userPreference ?? 'system'
 	const nextMode =
 		mode === 'system' ? 'light' : mode === 'light' ? 'dark' : 'system'
+
+	const iconClassNames =
+		'transition-transform duration-300 group-hover:scale-[1.15] motion-reduce:group-hover:scale-100'
+
 	const modeLabel = {
 		light: (
-			<Icon name="sun">
-				<span className="sr-only">Light</span>
-			</Icon>
+			<motion.span
+				key="light"
+				className="group h-[28px] leading-none"
+				initial={{ scale: 0 }}
+				animate={{ scale: 1 }}
+				exit={{ scale: 0 }}
+			>
+				<Icon name="sun" size="xl" className={iconClassNames}>
+					<span className="sr-only">Light</span>
+				</Icon>
+			</motion.span>
 		),
 		dark: (
-			<Icon name="moon">
-				<span className="sr-only">Dark</span>
-			</Icon>
+			<motion.span
+				key="dark"
+				className="group h-[28px] leading-none"
+				initial={{ scale: 0 }}
+				animate={{ scale: 1 }}
+				exit={{ scale: 0 }}
+			>
+				<Icon name="moon" size="xl" className={iconClassNames}>
+					<span className="sr-only">Dark</span>
+				</Icon>
+			</motion.span>
 		),
 		system: (
-			<Icon name="laptop">
-				<span className="sr-only">System</span>
-			</Icon>
+			<motion.span
+				key="system"
+				className="group h-[28px] leading-none"
+				initial={{ scale: 0 }}
+				animate={{ scale: 1 }}
+				exit={{ scale: 0 }}
+			>
+				<Icon name="laptop" size="xl" className={iconClassNames}>
+					<span className="sr-only">System</span>
+				</Icon>
+			</motion.span>
 		),
 	}
 
@@ -303,9 +313,11 @@ function ThemeSwitch({ userPreference }: { userPreference?: Theme | null }) {
 			<div className="flex gap-2">
 				<button
 					type="submit"
-					className="flex h-8 w-8 cursor-pointer items-center justify-center"
+					className="group flex cursor-pointer items-center justify-center rounded-full border-2 border-foreground p-2 ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 md:p-4"
 				>
-					{modeLabel[mode]}
+					<AnimatePresence initial={false} mode="wait">
+						{modeLabel[mode]}
+					</AnimatePresence>
 				</button>
 			</div>
 		</fetcher.Form>
