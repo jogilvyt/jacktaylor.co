@@ -8,6 +8,7 @@ import { LazyImage } from '#app/components/lazy-image'
 import { Button } from '#app/components/ui/button'
 import { Icon } from '#app/components/ui/icon'
 import { prisma } from '#app/utils/db.server'
+import { ConverkitSignupForm } from './_converkit+/signup-form'
 
 export const meta: MetaFunction = () => [{ title: 'Jack Taylor' }]
 
@@ -182,6 +183,7 @@ export default function Index() {
 					</div>
 				</div>
 			</section>
+			<ConverkitSignupForm />
 		</main>
 	)
 }
