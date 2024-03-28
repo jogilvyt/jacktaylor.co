@@ -5,7 +5,7 @@ import * as React from 'react'
 interface HeroProps {
 	title: string
 	secondaryTitle: string
-	images: [React.ReactNode, React.ReactNode]
+	images: React.ReactNode[]
 	cta?: React.ReactNode
 }
 
@@ -13,14 +13,14 @@ export function Hero({ title, secondaryTitle, images, cta }: HeroProps) {
 	return (
 		<section className="container-narrow grid grid-cols-2 gap-x-20 py-24 md:py-44">
 			<div className="col-span-2 flex flex-col justify-center md:col-span-1 md:max-w-md">
-				<h2 className="text-4xl lg:text-5xl">
+				<h1 className="text-4xl lg:text-5xl">
 					<AnimatedHeader className="mb-4 block" index={0}>
 						{title}
 					</AnimatedHeader>
 					<AnimatedHeader className="block text-muted-foreground" index={1}>
 						{secondaryTitle}
 					</AnimatedHeader>
-				</h2>
+				</h1>
 				{cta ? (
 					<motion.div
 						whileInView={{

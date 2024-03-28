@@ -38,7 +38,7 @@ export function Navigation() {
 					})
 				}
 			>
-				<h1 className="relative z-10">Jack Taylor</h1>
+				<div className="relative z-10">Jack Taylor</div>
 			</NavLink>
 			<ul className="hidden items-center gap-x-16 text-xl md:flex">
 				<li>

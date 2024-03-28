@@ -32,6 +32,7 @@ import { useToast } from './components/toaster.tsx'
 import { Icon, href as iconsHref } from './components/ui/icon.tsx'
 import { Toaster } from './components/ui/sonner.tsx'
 import fontStyleSheetUrl from './styles/fonts.css'
+import proseStyleSheetUrl from './styles/prose.css'
 import tailwindStyleSheetUrl from './styles/tailwind.css'
 import { ClientHintCheck, getHints, useHints } from './utils/client-hints.tsx'
 import { csrf } from './utils/csrf.server.ts'
@@ -65,6 +66,7 @@ export const links: LinksFunction = () => {
 		// These should match the css preloads above to avoid css as render blocking resource
 		{ rel: 'icon', type: 'image/svg+xml', href: '/favicons/favicon.svg' },
 		{ rel: 'stylesheet', href: tailwindStyleSheetUrl },
+		{ rel: 'stylesheet', href: proseStyleSheetUrl },
 		cssBundleHref ? { rel: 'stylesheet', href: cssBundleHref } : null,
 		{ rel: 'preload', href: fontStyleSheetUrl, as: 'style' },
 		{ rel: 'stylesheet', href: fontStyleSheetUrl },
@@ -275,7 +277,7 @@ function ThemeSwitch({ userPreference }: { userPreference?: Theme | null }) {
 				exit={{ scale: 0 }}
 			>
 				<Icon name="sun" size="xl" className={iconClassNames}>
-					<span className="sr-only">Light</span>
+					<span className="sr-only">Light theme</span>
 				</Icon>
 			</motion.span>
 		),
@@ -288,7 +290,7 @@ function ThemeSwitch({ userPreference }: { userPreference?: Theme | null }) {
 				exit={{ scale: 0 }}
 			>
 				<Icon name="moon" size="xl" className={iconClassNames}>
-					<span className="sr-only">Dark</span>
+					<span className="sr-only">Dark theme</span>
 				</Icon>
 			</motion.span>
 		),
@@ -301,7 +303,7 @@ function ThemeSwitch({ userPreference }: { userPreference?: Theme | null }) {
 				exit={{ scale: 0 }}
 			>
 				<Icon name="laptop" size="xl" className={iconClassNames}>
-					<span className="sr-only">System</span>
+					<span className="sr-only">System theme</span>
 				</Icon>
 			</motion.span>
 		),
@@ -314,6 +316,7 @@ function ThemeSwitch({ userPreference }: { userPreference?: Theme | null }) {
 				<button
 					type="submit"
 					className="group flex cursor-pointer items-center justify-center rounded-full border-2 border-foreground p-2 ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 md:p-4"
+					aria-label={`Switch to ${nextMode} theme`}
 				>
 					<AnimatePresence initial={false} mode="wait">
 						{modeLabel[mode]}

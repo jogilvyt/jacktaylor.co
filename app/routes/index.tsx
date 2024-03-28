@@ -1,7 +1,7 @@
 import { json } from '@remix-run/node'
 import { Link, useLoaderData, type MetaFunction } from '@remix-run/react'
 import clsx from 'clsx'
-import { format } from 'date-fns'
+import { BlogCard } from '#app/components/blog-card'
 import { Hero } from '#app/components/hero'
 import { HeroPeople, HeroScene } from '#app/components/illustrations/hero'
 import { LazyImage } from '#app/components/lazy-image'
@@ -94,6 +94,7 @@ export default function Index() {
 									href="https://twitter.com/jogilvyt"
 									target="_blank"
 									rel="noopener noreferrer"
+									aria-label="Twitter"
 								>
 									<Icon name="twitter" size="lg" />
 								</a>
@@ -103,6 +104,7 @@ export default function Index() {
 									href="https://www.linkedin.com/in/jack-taylor-b470a7130/"
 									target="_blank"
 									rel="noopener noreferrer"
+									aria-label="LinkedIn"
 								>
 									<Icon name="linkedin" size="lg" />
 								</a>
@@ -112,6 +114,7 @@ export default function Index() {
 									href="https://github.com/jogilvyt"
 									target="_blank"
 									rel="noopener noreferrer"
+									aria-label="GitHub"
 								>
 									<Icon name="github" size="lg" />
 								</a>
@@ -150,37 +153,22 @@ export default function Index() {
 					</div>
 					<div className="grid grid-cols-1 gap-x-5 gap-y-5 md:grid-cols-2 lg:grid-cols-3">
 						{latestPosts.map((post, idx) => (
-							<Link
-								to={`/blog/${post.slug}`}
-								aria-labelledby={`post-title-${post.id}`}
+							<BlogCard
 								key={post.id}
-								className={clsx(
-									'rounded-3xl bg-muted transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-									{
-										'hidden lg:block': idx >= 2,
-									},
-								)}
-							>
-								<LazyImage
-									width={432}
-									height={288}
-									imageUrl={`/resources/post-image/${post.image?.id}`}
-									dataUri={post.image?.dataUri}
-									alt={post.postMeta?.imageAlt ?? ''}
-									className="mb-6 w-full rounded-3xl"
-								/>
-								<div className="mb-8 px-6">
-									<div className="mb-2 text-sm text-muted-foreground">
-										{format(new Date(post.postMeta?.date ?? ''), 'd MMMM yyyy')}
-									</div>
-									<h3 className="mb-2 text-3xl" id={`post-title-${post.id}`}>
-										{post.postMeta?.title}
-									</h3>
-									<p className="text-xl font-light">
-										{post.postMeta?.description}
-									</p>
-								</div>
-							</Link>
+								slug={post.slug}
+								id={post.id}
+								date={post.postMeta?.date}
+								title={post.postMeta?.title}
+								description={post.postMeta?.description}
+								image={{
+									id: post.image?.id,
+									dataUri: post.image?.dataUri,
+									alt: post.postMeta?.imageAlt,
+								}}
+								className={clsx({
+									'hidden lg:block': idx >= 2,
+								})}
+							/>
 						))}
 					</div>
 				</div>

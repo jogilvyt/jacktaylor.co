@@ -107,4 +107,37 @@ export const extendedTheme = {
 	fontFamily: {
 		sans: ['var(--font-sans)'],
 	},
+	typography: {
+		DEFAULT: {
+			css: {
+				'--tw-prose-headings': 'hsl(var(--foreground))',
+				'--tw-prose-invert-headings': 'hsl(var(--foreground))',
+				a: {
+					transition: 'all 150ms',
+					borderRadius: 'calc(var(--radius) - 4px)',
+					'--tw-ring-offset-color': 'hsl(var(--background))',
+					'&:hover': {
+						color: 'hsl(var(--accent-foreground))',
+					},
+					'&:focus-visible': {
+						outline: '2px solid transparent',
+						outlineOffset: '2px',
+						'--tw-ring-offset-shadow':
+							'var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color)',
+						'--tw-ring-shadow':
+							'var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color)',
+						boxShadow:
+							'var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)',
+						'--tw-ring-color': 'hsl(var(--ring))',
+						'--tw-ring-offset-width': '2px',
+					},
+				},
+				code: {
+					backgroundColor: 'hsl(var(--muted))',
+					padding: '0.25rem 0.5rem',
+					borderRadius: 'var(--radius)',
+				},
+			},
+		},
+	},
 } satisfies Config['theme']
