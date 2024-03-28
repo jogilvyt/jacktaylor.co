@@ -125,7 +125,7 @@ export default function BlogPostRoute() {
 	}, [])
 
 	return (
-		<main>
+		<>
 			<div className="container-narrow">
 				<div className="py-12">
 					<Link
@@ -208,6 +208,6 @@ export default function BlogPostRoute() {
 					</div>
 				</div>
 			</section>
-		</main>
+		</>
 	)
 }

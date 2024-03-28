@@ -29,6 +29,10 @@ export function Navigation() {
 
 	return (
 		<>
+			{/* eslint-disable-next-line remix-react-routes/use-link-for-routes */}
+			<a href="#main-content" className="skip-link">
+				Skip to content
+			</a>
 			<NavLink
 				to="/"
 				className={({ isActive }) =>
@@ -63,6 +67,7 @@ export function Navigation() {
 								custom: 'text-2xl',
 							})
 						}
+						prefetch="intent"
 					>
 						Blog
 					</NavLink>
@@ -118,7 +123,7 @@ export function Navigation() {
 							</li>
 							<li>
 								<SheetClose asChild>
-									<NavLink to="/blog" className="text-3xl">
+									<NavLink to="/blog" className="text-3xl" prefetch="viewport">
 										Blog
 									</NavLink>
 								</SheetClose>

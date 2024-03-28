@@ -95,25 +95,22 @@ export default function ContactRoute() {
 	})
 
 	return (
-		<main>
+		<>
 			<Hero
 				title="Reach out, say hi,"
 				secondaryTitle="or ask a question."
 				images={[
-					<div
-						key="hero-image"
-						className="w-full max-w-[360px] rounded-3xl bg-secondary-foreground/20"
-					>
-						<LazyImage
-							width={360}
-							height={470}
-							imageUrl={`/images/headshot.jpg`}
-							dataUri="data:image/bmp;base64,Qk32BAAAAAAAADYAAAAoAAAACAAAAAgAAAABABgAAAAAAMAAAAATCwAAEwsAAAAAAAAAAAAApqm4maGyd4ykWniXXnCRa3COZm2FSmR3uLe1qamqgYOLVldrUkxfZV9mZ2pnVGZexsS5tLGrg36DSDRSQSg9YVtPanBaWm5VzM3EuLq4g4eYQkl3RElranBycYF0XXxr0NTQvsTHj5yzYneganqZg4+YgpaRZYyD2dvWy8/PqrO/kp2yl56toaepl6addpmL4+HW2djPxMS/trSxuLKsubWpqLCbhqKG6OPV4NvOz8q8xLytxLmpwrqlr7OYjKWC"
-							alt=""
-							className="rounded-3xl md:-translate-y-12 md:translate-x-12"
-						/>
-					</div>,
+					<LazyImage
+						key="contact-hero-image"
+						width={320}
+						height={400}
+						imageUrl={`/images/headshot.jpg`}
+						dataUri="data:image/bmp;base64,Qk32BAAAAAAAADYAAAAoAAAACAAAAAgAAAABABgAAAAAAMAAAAATCwAAEwsAAAAAAAAAAAAApqm4maGyd4ykWniXXnCRa3COZm2FSmR3uLe1qamqgYOLVldrUkxfZV9mZ2pnVGZexsS5tLGrg36DSDRSQSg9YVtPanBaWm5VzM3EuLq4g4eYQkl3RElranBycYF0XXxr0NTQvsTHj5yzYneganqZg4+YgpaRZYyD2dvWy8/PqrO/kp2yl56toaepl6addpmL4+HW2djPxMS/trSxuLKsubWpqLCbhqKG6OPV4NvOz8q8xLytxLmpwrqlr7OYjKWC"
+						alt=""
+						className="rounded-3xl"
+					/>,
 				]}
+				condensed
 			/>
 			<section className="bg-muted py-14 md:py-32">
 				<div className="mx-auto max-w-[420px]">
@@ -218,7 +215,7 @@ export default function ContactRoute() {
 					)}
 				</div>
 			</section>
-		</main>
+		</>
 	)
 }
 

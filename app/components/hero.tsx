@@ -4,22 +4,36 @@ import * as React from 'react'
 
 interface HeroProps {
 	title: string
-	secondaryTitle: string
+	secondaryTitle?: string
 	images: React.ReactNode[]
 	cta?: React.ReactNode
+	condensed?: boolean
 }
 
-export function Hero({ title, secondaryTitle, images, cta }: HeroProps) {
+export function Hero({
+	title,
+	secondaryTitle,
+	images,
+	cta,
+	condensed,
+}: HeroProps) {
 	return (
-		<section className="container-narrow grid grid-cols-2 gap-x-20 py-24 md:py-44">
+		<section
+			className={clsx('container-narrow grid grid-cols-2 gap-x-20', {
+				'py-24 md:py-44': !condensed,
+				'py-16 md:py-24': condensed,
+			})}
+		>
 			<div className="col-span-2 flex flex-col justify-center md:col-span-1 md:max-w-md">
 				<h1 className="text-4xl lg:text-5xl">
 					<AnimatedHeader className="mb-4 block" index={0}>
 						{title}
 					</AnimatedHeader>
-					<AnimatedHeader className="block text-muted-foreground" index={1}>
-						{secondaryTitle}
-					</AnimatedHeader>
+					{secondaryTitle ? (
+						<AnimatedHeader className="block text-muted-foreground" index={1}>
+							{secondaryTitle}
+						</AnimatedHeader>
+					) : null}
 				</h1>
 				{cta ? (
 					<motion.div
@@ -54,7 +68,7 @@ export function Hero({ title, secondaryTitle, images, cta }: HeroProps) {
 							transition: {
 								duration: 1,
 								ease: 'easeOut',
-								delay: 0.8 + index * 0.2,
+								delay: (secondaryTitle ? 0.8 : 0.4) + index * 0.2,
 							},
 						}}
 						initial={{

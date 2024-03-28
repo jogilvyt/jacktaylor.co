@@ -193,9 +193,9 @@ function App() {
 					</nav>
 				</header>
 
-				<div className="flex-1">
+				<main className="flex-1" id="main-content">
 					<Outlet />
-				</div>
+				</main>
 
 				<div className="container flex justify-between pb-5">
 					<Link to="/">Jack Taylor</Link>

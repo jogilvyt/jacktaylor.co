@@ -83,4 +83,27 @@
 	.container-narrow {
 		@apply mx-auto max-w-[1046px] px-8;
 	}
+
+	.skip-link {
+		clip: rect(1px, 1px, 1px, 1px);
+		display: block;
+		height: 1px;
+		overflow: hidden;
+		padding: 20px;
+		position: absolute;
+		text-decoration: underline;
+		top: 1rem;
+		left: 1rem;
+		width: 1px;
+		z-index: 999;
+	}
+
+	.skip-link:focus {
+		clip: auto;
+		height: auto;
+		overflow: visible;
+		width: auto;
+
+		@apply rounded-lg ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 motion-reduce:transition-none;
+	}
 }

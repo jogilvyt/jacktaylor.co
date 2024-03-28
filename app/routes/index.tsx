@@ -47,7 +47,7 @@ export default function Index() {
 	const { latestPosts } = useLoaderData<typeof loader>()
 
 	return (
-		<main>
+		<>
 			<Hero
 				title="Helpful content for software engineers."
 				secondaryTitle="Better experiences for your users."
@@ -151,7 +151,7 @@ export default function Index() {
 							</div>
 						</div>
 					</div>
-					<div className="grid grid-cols-1 gap-x-5 gap-y-5 md:grid-cols-2 lg:grid-cols-3">
+					<div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
 						{latestPosts.map((post, idx) => (
 							<BlogCard
 								key={post.id}
@@ -200,6 +200,6 @@ export default function Index() {
 					</div>
 				</div>
 			</section>
-		</main>
+		</>
 	)
 }
