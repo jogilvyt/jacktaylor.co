@@ -197,12 +197,12 @@ function App() {
 					<Outlet />
 				</main>
 
-				<footer className="bg-muted pb-6 pt-6 md:pt-16">
+				<footer className="bg-card pb-6 pt-6 md:pt-16">
 					<div className="container">
 						<div className="mb-4 flex flex-col items-center justify-between gap-4 md:mb-0 md:flex-row md:items-start md:gap-0">
 							<Link
 								to="/"
-								className="relative block rounded-md text-xl font-semibold ring-offset-background transition-all before:absolute before:-bottom-0 before:h-1 before:w-full before:origin-left before:scale-x-0 before:bg-accent-foreground before:transition-transform before:content-[''] hover:before:scale-x-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 motion-reduce:before:scale-x-100 motion-reduce:before:opacity-0 motion-reduce:before:transition-opacity motion-reduce:hover:before:opacity-100 md:mb-12 md:text-3xl"
+								className="relative block rounded-md text-xl font-semibold ring-offset-background transition-all before:absolute before:-bottom-0 before:h-1 before:w-full before:origin-left before:scale-x-0 before:bg-accent-foreground before:transition-transform before:content-[''] hover:before:scale-x-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 motion-reduce:before:scale-x-100 motion-reduce:before:opacity-0 motion-reduce:before:transition-opacity motion-reduce:hover:before:opacity-100 md:mb-24 md:text-3xl"
 							>
 								Jack Taylor
 							</Link>
