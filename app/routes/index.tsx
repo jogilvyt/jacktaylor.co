@@ -10,7 +10,12 @@ import { Icon } from '#app/components/ui/icon'
 import { prisma } from '#app/utils/db.server'
 import { ConverkitSignupForm } from './_converkit+/signup-form'
 
-export const meta: MetaFunction = () => [{ title: 'Jack Taylor' }]
+export const meta: MetaFunction = () => [
+	{
+		title: 'Jack Taylor',
+		description: 'Helpful content for software engineers.',
+	},
+]
 
 export async function loader() {
 	const latestPosts = await prisma.post.findMany({

@@ -17,7 +17,12 @@ import { Textarea } from '#app/components/ui/textarea'
 import { sendEmail } from '#app/utils/email.server'
 import { honeypot } from '#app/utils/honeypot.server'
 
-export const meta: MetaFunction = () => [{ title: 'Contact me | Jack Taylor' }]
+export const meta: MetaFunction = () => [
+	{
+		title: 'Contact me | Jack Taylor',
+		description: 'Reach out, say hi, or ask a question.',
+	},
+]
 
 const ContactFormSchema = z.object({
 	name: z

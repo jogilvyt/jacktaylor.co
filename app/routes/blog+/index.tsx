@@ -90,7 +90,12 @@ export async function loader({ request }: LoaderFunctionArgs) {
 	return json({ posts, categories })
 }
 
-export const meta: MetaFunction = () => [{ title: 'Blog posts | Jack Taylor' }]
+export const meta: MetaFunction = () => [
+	{
+		title: 'Blog posts | Jack Taylor',
+		description: 'Helpful content for software engineers.',
+	},
+]
 
 export default function BlogPostsRoute() {
 	const [searchParams, setSearchParams] = useSearchParams()

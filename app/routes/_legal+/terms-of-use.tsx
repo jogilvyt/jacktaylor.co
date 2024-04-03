@@ -1,5 +1,12 @@
+import { type MetaFunction } from '@remix-run/node'
 import { Link } from '@remix-run/react'
 import { Icon } from '#app/components/ui/icon'
+
+export const meta: MetaFunction = () => [
+	{
+		title: 'Terms of use | Jack Taylor',
+	},
+]
 
 export default function TermsOfUse() {
 	return (

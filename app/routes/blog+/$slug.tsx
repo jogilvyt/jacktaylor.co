@@ -1,4 +1,8 @@
-import { json, type LoaderFunctionArgs } from '@remix-run/node'
+import {
+	json,
+	type MetaFunction,
+	type LoaderFunctionArgs,
+} from '@remix-run/node'
 import { Link, useLoaderData, useParams } from '@remix-run/react'
 import clsx from 'clsx'
 import { format } from 'date-fns'
@@ -111,6 +115,15 @@ export async function loader({ params }: LoaderFunctionArgs) {
 	const readingTime = calculateReadingTime(post.content)
 
 	return json({ ...post, content, readingTime, relatedPosts })
+}
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+	return [
+		{
+			title: `${data?.postMeta?.title} | Jack Taylor`,
+			description: data?.postMeta?.description ?? '',
+		},
+	]
 }
 
 export default function BlogPostRoute() {
