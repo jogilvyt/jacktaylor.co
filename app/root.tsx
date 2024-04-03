@@ -239,8 +239,28 @@ function App() {
 								</Button>
 							</div>
 						</div>
-						<div className="text-center text-xs md:text-right">
-							&copy; Jack Taylor {new Date().getFullYear()}
+						<div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
+							<ul className="flex gap-x-6 text-xs">
+								<li>
+									<Link
+										to="/privacy-policy"
+										className="relative rounded-md ring-offset-background transition-all before:absolute before:-bottom-0 before:h-0.5 before:w-full before:origin-left before:scale-x-0 before:bg-accent-foreground before:transition-transform before:content-[''] hover:before:scale-x-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 motion-reduce:before:scale-x-100 motion-reduce:before:opacity-0 motion-reduce:before:transition-opacity motion-reduce:hover:before:opacity-100"
+									>
+										Privacy policy
+									</Link>
+								</li>
+								<li>
+									<Link
+										to="/terms-of-use"
+										className="relative rounded-md ring-offset-background transition-all before:absolute before:-bottom-0 before:h-0.5 before:w-full before:origin-left before:scale-x-0 before:bg-accent-foreground before:transition-transform before:content-[''] hover:before:scale-x-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 motion-reduce:before:scale-x-100 motion-reduce:before:opacity-0 motion-reduce:before:transition-opacity motion-reduce:hover:before:opacity-100"
+									>
+										Terms of use
+									</Link>
+								</li>
+							</ul>
+							<div className="text-center text-xs md:text-right">
+								&copy; Jack Taylor {new Date().getFullYear()}
+							</div>
 						</div>
 					</div>
 				</footer>
