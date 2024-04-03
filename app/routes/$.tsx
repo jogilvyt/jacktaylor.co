@@ -42,7 +42,7 @@ export function ErrorBoundary() {
 								height={400}
 								className="max-h-[320px] rounded-3xl md:max-h-none"
 							/>
-							<div className="flex flex-col gap-3">
+							<div className="prose mx-auto dark:prose-invert lg:prose-xl prose-headings:font-medium">
 								<h1>Oops! It looks like this page doesn't exist:</h1>
 								<pre className="whitespace-pre-wrap break-all text-body-lg">
 									{location.pathname}
