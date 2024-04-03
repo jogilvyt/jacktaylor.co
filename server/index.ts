@@ -47,6 +47,12 @@ const getHost = (req: { get: (key: string) => string | undefined }) =>
 // fly is our proxy
 app.set('trust proxy', true)
 
+app.use(
+	'/fonts',
+	// Can aggressively cache fonts as they don't change often
+	express.static('public/fonts', { immutable: true, maxAge: '1y' }),
+)
+
 // ensure HTTPS only (X-Forwarded-Proto comes from Fly)
 app.use((req, res, next) => {
 	const proto = req.get('X-Forwarded-Proto')
@@ -130,6 +136,7 @@ app.use(
 				'script-src': [
 					"'strict-dynamic'",
 					"'self'",
+					"'unsafe-eval'",
 					// @ts-expect-error
 					(_, res) => `'nonce-${res.locals.cspNonce}'`,
 				],

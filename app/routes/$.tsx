@@ -7,6 +7,7 @@
 
 import { Link, useLocation } from '@remix-run/react'
 import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
+import { LazyImage } from '#app/components/lazy-image'
 import { Icon } from '#app/components/ui/icon.tsx'
 
 export async function loader() {
@@ -25,16 +26,29 @@ export function ErrorBoundary() {
 		<GeneralErrorBoundary
 			statusHandlers={{
 				404: () => (
-					<div className="flex flex-col gap-6">
-						<div className="flex flex-col gap-3">
-							<h1>We can't find this page:</h1>
-							<pre className="whitespace-pre-wrap break-all text-body-lg">
-								{location.pathname}
-							</pre>
+					<div className="container-narrow">
+						<div className="flex flex-col gap-6">
+							<Link
+								to="/"
+								className="inline-flex items-center rounded-md text-xl ring-offset-background transition-all hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+							>
+								<Icon name="arrow-left" size="lg" className="mr-2" /> Return
+								home
+							</Link>
+							<LazyImage
+								imageUrl="/images/dropped-icecream.jpg"
+								alt=""
+								width={982}
+								height={400}
+								className="max-h-[320px] rounded-3xl md:max-h-none"
+							/>
+							<div className="prose mx-auto dark:prose-invert lg:prose-xl prose-headings:font-medium">
+								<h1>Oops! It looks like this page doesn't exist:</h1>
+								<pre className="whitespace-pre-wrap break-all text-body-lg">
+									{location.pathname}
+								</pre>
+							</div>
 						</div>
-						<Link to="/" className="text-body-md underline">
-							<Icon name="arrow-left">Back to home</Icon>
-						</Link>
 					</div>
 				),
 			}}

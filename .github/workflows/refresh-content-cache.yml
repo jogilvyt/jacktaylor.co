@@ -1,0 +1,24 @@
+name: 🚀 Refresh Content Cache
+on:
+  push:
+    branches:
+      - main
+      - dev
+
+jobs:
+  refresh:
+    name: 🚀 Refresh Content Cache
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v3
+
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: 🚀 Refresh Content
+        run: node ./other/refresh-content-cache.js
+        env:
+          CACHE_CONTENT_SECRET: ${{ secrets.CACHE_CONTENT_SECRET }}

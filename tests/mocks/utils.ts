@@ -20,6 +20,18 @@ export async function createFixture(
 	return fsExtra.writeJSON(path.join(dir, `./${name}.json`), data)
 }
 
+export const SignupSchame = z.object({
+	api_key: z.string(),
+	email: z.string(),
+	first_name: z.string(),
+})
+
+export async function writeSignup(rawSignup: unknown) {
+	const signup = SignupSchame.parse(rawSignup)
+	await createFixture('signup', signup.email, signup)
+	return signup
+}
+
 export const EmailSchema = z.object({
 	to: z.string(),
 	from: z.string(),

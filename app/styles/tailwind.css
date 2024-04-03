@@ -4,17 +4,17 @@
 
 @layer base {
 	:root {
-		/* --font-sans: here if you have one */
+		--font-sans: 'Helvetica Neue', 'Helvetica Neue Fallback';
 		/* --font-mono: here if you got it... */
 
 		/* prefixed with foreground because it should look good on the background */
 		--foreground-destructive: 345 82.7% 40.8%;
 
 		--background: 0 0% 100%;
-		--foreground: 222.2 84% 4.9%;
+		--foreground: 203, 20%, 18%;
 
-		--muted: 210 40% 93%;
-		--muted-foreground: 215.4 16.3% 30%;
+		--muted: 210 11% 96%;
+		--muted-foreground: 216 7% 58%;
 
 		--popover: 0 0% 100%;
 		--popover-foreground: 222.2 84% 4.9%;
@@ -23,22 +23,22 @@
 		--card-foreground: 222.2 84% 4.9%;
 
 		--border: 214.3 31.8% 91.4%;
-		--input: 214.3 31.8% 91.4%;
+		--input: 0 0% 0%;
 		--input-invalid: 0 84.2% 60.2%;
 
 		--primary: 222.2 47.4% 11.2%;
-		--primary-foreground: 210 40% 98%;
+		--primary-foreground: 286 100% 78%;
 
 		--secondary: 210 20% 83%;
-		--secondary-foreground: 222.2 47.4% 11.2%;
+		--secondary-foreground: 234 100% 50%;
 
 		--accent: 210 40% 90%;
-		--accent-foreground: 222.2 47.4% 11.2%;
+		--accent-foreground: 286 100% 78%;
 
 		--destructive: 0 70% 50%;
 		--destructive-foreground: 210 40% 98%;
 
-		--ring: 215 20.2% 65.1%;
+		--ring: 0 0% 0%;
 
 		--radius: 0.5rem;
 	}
@@ -60,21 +60,50 @@
 		--card-foreground: 210 40% 98%;
 
 		--border: 217.2 32.6% 17.5%;
-		--input: 217.2 32.6% 17.5%;
+		--input: 0 0% 100%;
 		--input-invalid: 0 62.8% 30.6%;
 
 		--primary: 210 40% 98%;
-		--primary-foreground: 222.2 47.4% 11.2%;
+		--primary-foreground: 286 100% 78%;
 
 		--secondary: 217.2 20% 24%;
-		--secondary-foreground: 210 40% 98%;
+		--secondary-foreground: 210 97% 54%;
 
-		--accent: 217.2 32.6% 10%;
-		--accent-foreground: 210 40% 98%;
+		--accent: 210 40% 90%;
+		--accent-foreground: 286 100% 78%;
 
 		--destructive: 0 60% 40%;
 		--destructive-foreground: 0 85.7% 97.3%;
 
-		--ring: 217.2 32.6% 60%;
+		--ring: 0 0% 100%;
+	}
+}
+
+@layer components {
+	.container-narrow {
+		@apply mx-auto max-w-[1046px] px-8;
+	}
+
+	.skip-link {
+		clip: rect(1px, 1px, 1px, 1px);
+		display: block;
+		height: 1px;
+		overflow: hidden;
+		padding: 20px;
+		position: absolute;
+		text-decoration: underline;
+		top: 1rem;
+		left: 1rem;
+		width: 1px;
+		z-index: 999;
+	}
+
+	.skip-link:focus {
+		clip: auto;
+		height: auto;
+		overflow: visible;
+		width: auto;
+
+		@apply rounded-lg ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 motion-reduce:transition-none;
 	}
 }

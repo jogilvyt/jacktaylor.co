@@ -21,13 +21,19 @@ import {
 	useLoaderData,
 } from '@remix-run/react'
 import { withSentry } from '@sentry/remix'
+import { AnimatePresence, MotionConfig, motion } from 'framer-motion'
+import * as React from 'react'
 import { AuthenticityTokenProvider } from 'remix-utils/csrf/react'
 import { HoneypotProvider } from 'remix-utils/honeypot/react'
 import { z } from 'zod'
 import { GeneralErrorBoundary } from './components/error-boundary.tsx'
+import { Navigation } from './components/navigation.tsx'
 import { useToast } from './components/toaster.tsx'
+import { Button } from './components/ui/button.tsx'
 import { Icon, href as iconsHref } from './components/ui/icon.tsx'
 import { Toaster } from './components/ui/sonner.tsx'
+import fontStyleSheetUrl from './styles/fonts.css'
+import proseStyleSheetUrl from './styles/prose.css'
 import tailwindStyleSheetUrl from './styles/tailwind.css'
 import { ClientHintCheck, getHints, useHints } from './utils/client-hints.tsx'
 import { csrf } from './utils/csrf.server.ts'
@@ -46,7 +52,6 @@ export const links: LinksFunction = () => {
 		// Preload CSS as a resource to avoid render blocking
 		{ rel: 'preload', href: tailwindStyleSheetUrl, as: 'style' },
 		cssBundleHref ? { rel: 'preload', href: cssBundleHref, as: 'style' } : null,
-		{ rel: 'mask-icon', href: '/favicons/mask-icon.svg' },
 		{
 			rel: 'alternate icon',
 			type: 'image/png',
@@ -59,9 +64,12 @@ export const links: LinksFunction = () => {
 			crossOrigin: 'use-credentials',
 		} as const, // necessary to make typescript happy
 		// These should match the css preloads above to avoid css as render blocking resource
-		{ rel: 'icon', type: 'image/svg+xml', href: '/favicons/favicon.svg' },
+		{ rel: 'icon', type: 'image/x-icon', href: '/favicons/favicon.ico' },
 		{ rel: 'stylesheet', href: tailwindStyleSheetUrl },
+		{ rel: 'stylesheet', href: proseStyleSheetUrl },
 		cssBundleHref ? { rel: 'stylesheet', href: cssBundleHref } : null,
+		{ rel: 'preload', href: fontStyleSheetUrl, as: 'style' },
+		{ rel: 'stylesheet', href: fontStyleSheetUrl },
 	].filter(Boolean)
 }
 
@@ -176,22 +184,86 @@ function App() {
 	return (
 		<Document nonce={nonce} theme={theme} env={data.ENV}>
 			<div className="flex h-screen flex-col justify-between">
-				<header className="container py-6">
+				<header className="container mt-8 lg:mt-16">
 					<nav>
 						<div className="flex flex-wrap items-center justify-between gap-4 sm:flex-nowrap md:gap-8">
-							<Link to="/">Jack Taylor</Link>
+							<Navigation />
+							<ThemeSwitch userPreference={data.requestInfo.userPrefs.theme} />
 						</div>
 					</nav>
 				</header>
 
-				<div className="flex-1">
+				<main className="flex-1" id="main-content">
 					<Outlet />
-				</div>
+				</main>
 
-				<div className="container flex justify-between pb-5">
-					<Link to="/">Jack Taylor</Link>
-					<ThemeSwitch userPreference={data.requestInfo.userPrefs.theme} />
-				</div>
+				<footer className="bg-card pb-6 pt-6 md:pt-16">
+					<div className="container">
+						<div className="mb-4 flex flex-col items-center justify-between gap-4 md:mb-0 md:flex-row md:items-start md:gap-0">
+							<Link
+								to="/"
+								className="relative block rounded-md text-xl font-semibold ring-offset-background transition-all before:absolute before:-bottom-0 before:h-1 before:w-full before:origin-left before:scale-x-0 before:bg-accent-foreground before:transition-transform before:content-[''] hover:before:scale-x-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 motion-reduce:before:scale-x-100 motion-reduce:before:opacity-0 motion-reduce:before:transition-opacity motion-reduce:hover:before:opacity-100 md:mb-24 md:text-3xl"
+							>
+								Jack Taylor
+							</Link>
+							<div className="flex gap-x-4">
+								<Button asChild variant="outline" size="icon">
+									<a
+										href="https://twitter.com/jogilvyt"
+										target="_blank"
+										rel="noopener noreferrer"
+										aria-label="Twitter"
+									>
+										<Icon name="twitter" size="lg" />
+									</a>
+								</Button>
+								<Button asChild variant="outline" size="icon">
+									<a
+										href="https://www.linkedin.com/in/jack-taylor-b470a7130/"
+										target="_blank"
+										rel="noopener noreferrer"
+										aria-label="LinkedIn"
+									>
+										<Icon name="linkedin" size="lg" />
+									</a>
+								</Button>
+								<Button asChild variant="outline" size="icon">
+									<a
+										href="https://github.com/jogilvyt"
+										target="_blank"
+										rel="noopener noreferrer"
+										aria-label="GitHub"
+									>
+										<Icon name="github" size="lg" />
+									</a>
+								</Button>
+							</div>
+						</div>
+						<div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
+							<ul className="flex gap-x-6 text-xs">
+								<li>
+									<Link
+										to="/privacy-policy"
+										className="relative rounded-md ring-offset-background transition-all before:absolute before:-bottom-0 before:h-0.5 before:w-full before:origin-left before:scale-x-0 before:bg-accent-foreground before:transition-transform before:content-[''] hover:before:scale-x-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 motion-reduce:before:scale-x-100 motion-reduce:before:opacity-0 motion-reduce:before:transition-opacity motion-reduce:hover:before:opacity-100"
+									>
+										Privacy policy
+									</Link>
+								</li>
+								<li>
+									<Link
+										to="/terms-of-use"
+										className="relative rounded-md ring-offset-background transition-all before:absolute before:-bottom-0 before:h-0.5 before:w-full before:origin-left before:scale-x-0 before:bg-accent-foreground before:transition-transform before:content-[''] hover:before:scale-x-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 motion-reduce:before:scale-x-100 motion-reduce:before:opacity-0 motion-reduce:before:transition-opacity motion-reduce:hover:before:opacity-100"
+									>
+										Terms of use
+									</Link>
+								</li>
+							</ul>
+							<div className="text-center text-xs md:text-right">
+								&copy; Jack Taylor {new Date().getFullYear()}
+							</div>
+						</div>
+					</div>
+				</footer>
 			</div>
 			<Toaster closeButton position="top-center" theme={theme} />
 		</Document>
@@ -203,7 +275,9 @@ function AppWithProviders() {
 	return (
 		<AuthenticityTokenProvider token={data.csrfToken}>
 			<HoneypotProvider {...data.honeyProps}>
-				<App />
+				<MotionConfig reducedMotion="user">
+					<App />
+				</MotionConfig>
 			</HoneypotProvider>
 		</AuthenticityTokenProvider>
 	)
@@ -253,21 +327,49 @@ function ThemeSwitch({ userPreference }: { userPreference?: Theme | null }) {
 	const mode = optimisticMode ?? userPreference ?? 'system'
 	const nextMode =
 		mode === 'system' ? 'light' : mode === 'light' ? 'dark' : 'system'
+
+	const iconClassNames =
+		'transition-transform duration-300 group-hover:scale-[1.15] motion-reduce:group-hover:scale-100'
+
 	const modeLabel = {
 		light: (
-			<Icon name="sun">
-				<span className="sr-only">Light</span>
-			</Icon>
+			<motion.span
+				key="light"
+				className="group h-[28px] leading-none"
+				initial={{ scale: 0 }}
+				animate={{ scale: 1 }}
+				exit={{ scale: 0 }}
+			>
+				<Icon name="sun" size="xl" className={iconClassNames}>
+					<span className="sr-only">Light theme</span>
+				</Icon>
+			</motion.span>
 		),
 		dark: (
-			<Icon name="moon">
-				<span className="sr-only">Dark</span>
-			</Icon>
+			<motion.span
+				key="dark"
+				className="group h-[28px] leading-none"
+				initial={{ scale: 0 }}
+				animate={{ scale: 1 }}
+				exit={{ scale: 0 }}
+			>
+				<Icon name="moon" size="xl" className={iconClassNames}>
+					<span className="sr-only">Dark theme</span>
+				</Icon>
+			</motion.span>
 		),
 		system: (
-			<Icon name="laptop">
-				<span className="sr-only">System</span>
-			</Icon>
+			<motion.span
+				key="system"
+				className="group h-[28px] leading-none"
+				initial={{ scale: 0 }}
+				animate={{ scale: 1 }}
+				exit={{ scale: 0 }}
+			>
+				<Icon name="laptop" size="xl" className={iconClassNames}>
+					<span className="sr-only">System theme</span>
+				</Icon>
+			</motion.span>
 		),
 	}
 
@@ -277,9 +379,12 @@ function ThemeSwitch({ userPreference }: { userPreference?: Theme | null }) {
 			<div className="flex gap-2">
 				<button
 					type="submit"
-					className="flex h-8 w-8 cursor-pointer items-center justify-center"
+					className="group flex cursor-pointer items-center justify-center rounded-full border-2 border-foreground p-2 ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 md:p-4"
+					aria-label={`Switch to ${nextMode} theme`}
 				>
-					{modeLabel[mode]}
+					<AnimatePresence initial={false} mode="wait">
+						{modeLabel[mode]}
+					</AnimatePresence>
 				</button>
 			</div>
 		</fetcher.Form>
