@@ -93,8 +93,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
 export const meta: MetaFunction = () => [
 	{
 		title: 'Blog posts | Jack Taylor',
-		description: 'Helpful content for software engineers.',
 	},
+	{ name: 'description', content: 'Helpful content for software engineers.' },
 ]
 
 export default function BlogPostsRoute() {

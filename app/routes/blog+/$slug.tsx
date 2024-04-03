@@ -121,8 +121,8 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 	return [
 		{
 			title: `${data?.postMeta?.title} | Jack Taylor`,
-			description: data?.postMeta?.description ?? '',
 		},
+		{ name: 'description', content: data?.postMeta?.description ?? '' },
 	]
 }
 

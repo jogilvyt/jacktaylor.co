@@ -13,8 +13,8 @@ import { ConverkitSignupForm } from './_converkit+/signup-form'
 export const meta: MetaFunction = () => [
 	{
 		title: 'Jack Taylor',
-		description: 'Helpful content for software engineers.',
 	},
+	{ name: 'description', content: 'Helpful content for software engineers.' },
 ]
 
 export async function loader() {

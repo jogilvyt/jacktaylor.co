@@ -20,8 +20,8 @@ import { honeypot } from '#app/utils/honeypot.server'
 export const meta: MetaFunction = () => [
 	{
 		title: 'Contact me | Jack Taylor',
-		description: 'Reach out, say hi, or ask a question.',
 	},
+	{ name: 'description', content: 'Reach out, say hi, or ask a question.' },
 ]
 
 const ContactFormSchema = z.object({
