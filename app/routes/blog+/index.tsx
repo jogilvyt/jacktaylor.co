@@ -105,17 +105,16 @@ export default function BlogPostsRoute() {
 		<>
 			<Hero
 				title="Helpful content for software engineers."
-				images={[
+				image={
 					<LazyImage
-						key="blog-hero-image"
 						width={670}
 						height={320}
 						imageUrl="/images/laptop.jpg"
 						dataUri="data:image/bmp;base64,Qk32BAAAAAAAADYAAAAoAAAACAAAAAgAAAABABgAAAAAAMAAAAATCwAAEwsAAAAAAAAAAAAAAAAXCAcSKCIRPDUlRj44RDxANCw4DgEhIRgkMSYgST0nW09BYlhZXFRiSkJVLiIzLSAoPi8mWUkza15TcWduaGJ3VE5nOSs8JhUjOyojWEc1al1Xbmd0ZGJ8T01pNSY5CgAYKRYZSDosWlBOXFpoUVZwPUBeJBAvAAAQCAAMMCQaPzs3QURONj9WIypIAwAiAAASAAAGEQgAIiMKIyslGSUwAQ0sAAAYAAAUAAAGAAAADxUAERwABhURAAAZAAAU"
 						alt=""
 						className="hidden w-full rounded-3xl md:block"
-					/>,
-				]}
+					/>
+				}
 				condensed
 			/>
 			<section className="container pb-12 md:pb-24">

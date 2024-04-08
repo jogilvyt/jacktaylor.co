@@ -104,17 +104,16 @@ export default function ContactRoute() {
 			<Hero
 				title="Reach out, say hi,"
 				secondaryTitle="or ask a question."
-				images={[
+				image={
 					<LazyImage
-						key="contact-hero-image"
 						width={320}
 						height={400}
 						imageUrl={`/images/headshot.jpg`}
 						dataUri="data:image/bmp;base64,Qk32BAAAAAAAADYAAAAoAAAACAAAAAgAAAABABgAAAAAAMAAAAATCwAAEwsAAAAAAAAAAAAApqm4maGyd4ykWniXXnCRa3COZm2FSmR3uLe1qamqgYOLVldrUkxfZV9mZ2pnVGZexsS5tLGrg36DSDRSQSg9YVtPanBaWm5VzM3EuLq4g4eYQkl3RElranBycYF0XXxr0NTQvsTHj5yzYneganqZg4+YgpaRZYyD2dvWy8/PqrO/kp2yl56toaepl6addpmL4+HW2djPxMS/trSxuLKsubWpqLCbhqKG6OPV4NvOz8q8xLytxLmpwrqlr7OYjKWC"
 						alt=""
 						className="rounded-3xl"
-					/>,
-				]}
+					/>
+				}
 				condensed
 			/>
 			<section className="bg-muted py-14 md:py-32">

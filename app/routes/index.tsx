@@ -3,7 +3,7 @@ import { Link, useLoaderData, type MetaFunction } from '@remix-run/react'
 import clsx from 'clsx'
 import { BlogCard } from '#app/components/blog-card'
 import { Hero } from '#app/components/hero'
-import { HeroPeople, HeroScene } from '#app/components/illustrations/hero'
+import { HeroImage } from '#app/components/illustrations/hero'
 import { LazyImage } from '#app/components/lazy-image'
 import { Button } from '#app/components/ui/button'
 import { Icon } from '#app/components/ui/icon'
@@ -56,10 +56,7 @@ export default function Index() {
 			<Hero
 				title="Helpful content for software engineers."
 				secondaryTitle="Better experiences for your users."
-				images={[
-					<HeroScene key="scene" className="w-full" />,
-					<HeroPeople key="people" className="w-full" />,
-				]}
+				image={<HeroImage className="w-full" />}
 				cta={
 					<Button asChild variant="link" size="lg">
 						<Link to="/blog">Read the blog</Link>
