@@ -1,3 +1,4 @@
+import { type SEOHandle } from '@nasa-gcn/remix-seo'
 import {
 	json,
 	type MetaFunction,
@@ -124,6 +125,19 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 		},
 		{ name: 'description', content: data?.postMeta?.description ?? '' },
 	]
+}
+
+export const handle: SEOHandle = {
+	getSitemapEntries: async request => {
+		const blogs = await prisma.post.findMany({
+			select: {
+				slug: true,
+			},
+		})
+		return blogs.map(blog => {
+			return { route: `/blog/${blog.slug}`, priority: 0.7 }
+		})
+	},
 }
 
 export default function BlogPostRoute() {
