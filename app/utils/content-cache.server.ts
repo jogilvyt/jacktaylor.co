@@ -112,6 +112,26 @@ export async function generateContentCache() {
 				})
 			}
 
+			// delete any categories that no longer have any posts
+			const categories = await tx.category.findMany({
+				select: {
+					id: true,
+					posts: {
+						select: {
+							id: true,
+						},
+					},
+				},
+			})
+
+			for (const category of categories) {
+				if (category.posts.length === 0) {
+					await tx.category.delete({
+						where: { id: category.id },
+					})
+				}
+			}
+
 			// update the content hash in the DB so we know when to regenerate the cache
 			const contentHash = await hashElement(process.cwd() + '/content')
 			const dbContentHash = await tx.contentHash.findFirst({
