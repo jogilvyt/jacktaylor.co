@@ -4,7 +4,11 @@ import {
 	type MetaFunction,
 	type LoaderFunctionArgs,
 } from '@remix-run/node'
-import { Link, useLoaderData, useParams } from '@remix-run/react'
+import {
+	unstable_useViewTransitionState,
+	useLoaderData,
+	useParams,
+} from '@remix-run/react'
 import clsx from 'clsx'
 import { format } from 'date-fns'
 import * as React from 'react'
@@ -12,10 +16,12 @@ import { BlogCard } from '#app/components/blog-card'
 import { Callout } from '#app/components/callout'
 import { LazyImage } from '#app/components/lazy-image'
 import { ExternalLink } from '#app/components/text-link'
+import { Link } from '#app/components/transition-links'
 import { Icon } from '#app/components/ui/icon'
 import { prisma } from '#app/utils/db.server'
 import { useMdxComponent } from '#app/utils/mdx'
 import { calculateReadingTime, getMdxPage } from '#app/utils/mdx.server'
+import { cn } from '#app/utils/misc'
 import { generateSEOMetaTags } from '#app/utils/seo'
 import { ConverkitSignupForm } from '../_converkit+/signup-form'
 
@@ -145,6 +151,9 @@ export const handle: SEOHandle = {
 export default function BlogPostRoute() {
 	const data = useLoaderData<typeof loader>()
 	const params = useParams()
+	const isTransitioning = unstable_useViewTransitionState(
+		`/blog/${params.slug}`,
+	)
 	const Component = useMdxComponent({ content: data.content })
 
 	const windowRef = React.useRef<Window | null>(null)
@@ -171,16 +180,18 @@ export default function BlogPostRoute() {
 						alt={data.postMeta?.imageAlt ?? ''}
 						width={982}
 						height={600}
-						className="max-h-[320px] rounded-3xl md:max-h-none"
+						className={cn('max-h-[320px] rounded-3xl md:max-h-none', {
+							'blog-card-image-transition': isTransitioning,
+						})}
 					/>
 				) : null}
 				<article className="py-6">
 					<div className="prose mx-auto max-w-[820px] dark:prose-invert lg:prose-xl prose-headings:font-medium">
-						<span className="not-prose mb-2 block text-base text-muted-foreground">
+						<span className="not-prose blog-card-date-transition mb-2 block text-base text-muted-foreground">
 							{format(new Date(data.postMeta?.date ?? ''), 'd MMMM yyyy')} ·{' '}
 							{data.readingTime.text}
 						</span>
-						<h1 className="not-prose mb-6 text-4xl lg:text-5xl">
+						<h1 className="not-prose blog-card-title-transition mb-6 text-4xl lg:text-5xl">
 							{data.postMeta?.title}
 						</h1>
 						<Component

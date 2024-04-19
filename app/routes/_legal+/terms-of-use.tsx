@@ -1,5 +1,5 @@
 import { type MetaFunction } from '@remix-run/node'
-import { Link } from '@remix-run/react'
+import { Link } from '#app/components/transition-links'
 import { Icon } from '#app/components/ui/icon'
 
 export const meta: MetaFunction = () => [

@@ -9,7 +9,6 @@ import {
 	type MetaFunction,
 } from '@remix-run/node'
 import {
-	Link,
 	Links,
 	LiveReload,
 	Meta,
@@ -29,12 +28,14 @@ import { z } from 'zod'
 import { GeneralErrorBoundary } from './components/error-boundary.tsx'
 import { Navigation } from './components/navigation.tsx'
 import { useToast } from './components/toaster.tsx'
+import { Link } from './components/transition-links.tsx'
 import { Button } from './components/ui/button.tsx'
 import { Icon, href as iconsHref } from './components/ui/icon.tsx'
 import { Toaster } from './components/ui/sonner.tsx'
 import fontStyleSheetUrl from './styles/fonts.css'
 import proseStyleSheetUrl from './styles/prose.css'
 import tailwindStyleSheetUrl from './styles/tailwind.css'
+import viewTransitionsStyleSheetUrl from './styles/view-transitions.css'
 import { ClientHintCheck, getHints, useHints } from './utils/client-hints.tsx'
 import { csrf } from './utils/csrf.server.ts'
 import { getEnv } from './utils/env.server.ts'
@@ -67,6 +68,7 @@ export const links: LinksFunction = () => {
 		{ rel: 'icon', type: 'image/x-icon', href: '/favicons/favicon.ico' },
 		{ rel: 'stylesheet', href: tailwindStyleSheetUrl },
 		{ rel: 'stylesheet', href: proseStyleSheetUrl },
+		{ rel: 'stylesheet', href: viewTransitionsStyleSheetUrl },
 		cssBundleHref ? { rel: 'stylesheet', href: cssBundleHref } : null,
 		{ rel: 'preload', href: fontStyleSheetUrl, as: 'style' },
 		{ rel: 'stylesheet', href: fontStyleSheetUrl },
