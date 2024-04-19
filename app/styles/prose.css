@@ -77,3 +77,7 @@ pre code.hljs {
 	color: #ffdcd7;
 	background-color: #67060c;
 }
+code::before,
+code::after {
+	display: none;
+}

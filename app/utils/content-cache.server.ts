@@ -16,9 +16,9 @@ const frontmatterSchema = z.object({
 	date: z.date(),
 	description: z.string(),
 	categories: z.array(z.string()),
-	imageAlt: z.string(),
+	imageAlt: z.string().nullable(),
 	imageUrl: z.string(),
-	imageCredit: z.string(),
+	imageCredit: z.string().nullable(),
 })
 
 export async function generateContentCache() {
@@ -60,8 +60,8 @@ export async function generateContentCache() {
 								date: updatedFiles.date,
 								description: updatedFiles.description,
 								imageUrl: updatedFiles.imageUrl,
-								imageCredit: updatedFiles.imageCredit,
-								imageAlt: updatedFiles.imageAlt,
+								imageCredit: updatedFiles.imageCredit ?? '',
+								imageAlt: updatedFiles.imageAlt ?? '',
 								categories: {
 									connectOrCreate: updatedFiles.categories.map(category => ({
 										where: { name: category },
@@ -98,8 +98,8 @@ export async function generateContentCache() {
 								date: createdFiles.date,
 								description: createdFiles.description,
 								imageUrl: createdFiles.imageUrl,
-								imageCredit: createdFiles.imageCredit,
-								imageAlt: createdFiles.imageAlt,
+								imageCredit: createdFiles.imageCredit ?? '',
+								imageAlt: createdFiles.imageAlt ?? '',
 								categories: {
 									connectOrCreate: createdFiles.categories.map(category => ({
 										where: { name: category },

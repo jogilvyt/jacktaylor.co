@@ -1,4 +1,4 @@
-import { json } from '@remix-run/node'
+import { type LoaderFunctionArgs, json } from '@remix-run/node'
 import { Link, useLoaderData, type MetaFunction } from '@remix-run/react'
 import clsx from 'clsx'
 import { BlogCard } from '#app/components/blog-card'
@@ -8,16 +8,10 @@ import { LazyImage } from '#app/components/lazy-image'
 import { Button } from '#app/components/ui/button'
 import { Icon } from '#app/components/ui/icon'
 import { prisma } from '#app/utils/db.server'
+import { generateSEOMetaTags } from '#app/utils/seo.ts'
 import { ConverkitSignupForm } from './_converkit+/signup-form'
 
-export const meta: MetaFunction = () => [
-	{
-		title: 'Jack Taylor',
-	},
-	{ name: 'description', content: 'Helpful content for software engineers.' },
-]
-
-export async function loader() {
+export async function loader({ request }: LoaderFunctionArgs) {
 	const latestPosts = await prisma.post.findMany({
 		orderBy: {
 			postMeta: {
@@ -45,7 +39,16 @@ export async function loader() {
 		take: 3,
 	})
 
-	return json({ latestPosts })
+	return json({ latestPosts, ogUrl: request.url })
+}
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+	return generateSEOMetaTags({
+		title: 'Home',
+		ogImageTitle: 'JackTaylor.co',
+		description: 'Helpful content for software engineers.',
+		url: data?.ogUrl ?? '',
+	})
 }
 
 export default function Index() {

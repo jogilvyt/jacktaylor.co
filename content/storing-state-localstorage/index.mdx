@@ -1,0 +1,381 @@
+---
+slug: storing-state-localstorage-react
+title: Storing React state in localStorage - and how to write tests for it
+date: 2021-01-19
+description:
+  Create a custom hook to persist state between sessions, and add test coverage
+  with Jest and React Testing Library.
+categories:
+  - React
+  - Testing
+imageUrl: ./banner.jpg
+imageAlt:
+imageCredit:
+---
+
+Storing state in `localStorage` is a great way of improving user experience, so
+that a user can pick up where they left off when returning to an application.
+With React hooks, it's super easy to abstract this functionality so it can be
+reused anywhere. In this article, I am going to go over the implementation, and
+also show you how you can write tests for it using Jest and React Testing
+Library.
+
+We are going to be building a good old counter app, and storing the count
+variable in `localStorage` so the value is persisted between sessions.
+
+**TL;DR** — you can find the final code for the project in
+[this Github repo](https://github.com/jogilvyt/counter-with-localstorage).
+
+## Simple counter app
+
+Let's start by getting a simple counter app working. We have the following code:
+
+```jsx
+import { useState } from 'react'
+
+function App() {
+	const [count, setCount] = useState(0)
+
+	return (
+		<div>
+			<h1>Counter</h1>
+			<p>Number: {count}</p>
+			<button onClick={() => setCount(count - 1)}>-1</button>
+			<button onClick={() => setCount(count + 1)}>+1</button>
+		</div>
+	)
+}
+
+export default App
+```
+
+We have a **count** variable stored in state, and a decrement and increment
+button which decreases or increases the number. Now for the fun part!
+
+## Reading from `localStorage`
+
+The localStorage API exposes four methods: `getItem()`, `setItem()`,
+`removeItem()` and `clear()`. We will want to use `getItem()` when we initialise
+the component to load in any previously persisted data, and `setItem()` to
+update the `localStorage` when the count variable changes.
+
+To do this, we can take advantage of `useState` "lazy initialisation". All this
+means is that we can pass a function to `useState` which returns the initial
+state value, rather than passing the initial value straight in. This means we
+can check if there is anything stored in `localStorage` and initialise the state
+to that value; otherwise initialise it to the default value.
+
+For our code, this will look something like this:
+
+```jsx
+import { useState } from 'react'
+
+function App() {
+	const [count, setCount] = useState(() => {
+		const persistedValue = window.localStorage.getItem('count')
+		return persistedValue !== null ? JSON.parse(persistedValue) : 0
+	})
+
+	return (
+		<div>
+			<h1>Counter</h1>
+			<p>Number: {count}</p>
+			<button onClick={() => setCount(count - 1)}>-1</button>
+			<button onClick={() => setCount(count + 1)}>+1</button>
+		</div>
+	)
+}
+
+export default App
+```
+
+So, when `useState` is initialised, it checks to see if `localStorage` contains
+any items with the key `count`. If so, the state is initialised to that value —
+otherwise, the initial state is set to `0`.
+
+## Writing to `localStorage`
+
+At this point, we are reading the state from `localStorage` but we never set it.
+You can click the buttons and increase or decrease the count, but when you
+refresh the page, it will get set back to the default value of `0`.
+
+To address this, we need to call `setItem()` when the `count` value changes.
+There are a couple of ways of doing this — for example, you could add to the
+`onClick` functions on the buttons:
+
+```jsx
+<button
+	onClick={() => {
+		setCount(count + 1)
+		localStorage.setItem('count', count + 1)
+	}}
+>
+	+1
+</button>
+```
+
+However, in a real-world application where the state might be being updated from
+lots of places, this can quickly spaghetti and get out of hand. A simpler
+solution is to use `useEffect` to update `localStorage` every time the `count`
+variable changes:
+
+```jsx
+import { useState, useEffect } from 'react'
+
+function App() {
+	const key = 'count'
+
+	const [count, setCount] = useState(() => {
+		const persistedValue = window.localStorage.getItem(key)
+		return persistedValue !== null ? JSON.parse(persistedValue) : 0
+	})
+
+	useEffect(() => {
+		window.localStorage.setItem(key, JSON.stringify(count))
+	}, [count])
+
+	return (
+		<div>
+			<h1>Counter</h1>
+			<p>Number: {count}</p>
+			<button onClick={() => setCount(count - 1)}>-1</button>
+			<button onClick={() => setCount(count + 1)}>+1</button>
+		</div>
+	)
+}
+
+export default App
+```
+
+The useEffect has count as a dependency — this means every time the count
+changes, useEffect will run and update localStorage with the new value.
+
+<Callout>
+	As a side note, this is exactly what `useEffect` is designed for - to handle
+	"side effects" (such as mutating `localStorage`) in our React components.
+	Check out "[Stop lying to React about missing
+	dependecies](/blog/stop-lying-to-react-about-missing-dependencies)" if you
+	want to learn more about how `useEffect` works under the hood.
+</Callout>
+
+At this stage, we have a fully functioning app which stores the `count` in
+`localStorage` and persists it between sessions. This is great! However, with
+custom React hooks, we can abstract this code to make it reusable, rather than
+being tightly coupled to the counter functionality. This also makes the code
+more testable . Decoupling logic like this from our components means we can test
+code in isolation rather than having the `localStorage` logic closely linked to
+the counter logic. More on that later!
+
+## Creating a custom React hook
+
+We can abstract the `localStorage` state logic into its own hook:
+
+```jsx
+import { useState, useEffect } from 'react'
+
+const useStateWithLocalStorage = (defaultValue, key) => {
+	const [value, setValue] = useState(() => {
+		const persistedValue = window.localStorage.getItem(key)
+
+		return persistedValue !== null ? JSON.parse(persistedValue) : defaultValue
+	})
+
+	useEffect(() => {
+		window.localStorage.setItem(key, JSON.stringify(value))
+	}, [key, value])
+
+	return [value, setValue]
+}
+
+export default useStateWithLocalStorage
+```
+
+We have pretty much the same code that we had in the counter component, but we
+have made it a bit more generic so that it can be reused in any context. It
+takes the `defaultValue` and `key` as arguments, and listens for changes to the
+value inside the `useEffect` to update `localStorage` using `setItem()`.
+
+To use it inside our counter component:
+
+```jsx
+import useStateWithLocalStorage from '../hooks/useStateWithLocalStorage'
+
+function App() {
+	const [count, setCount] = useStateWithLocalStorage(0, 'count')
+
+	return (
+		<div>
+			<h1>Counter</h1>
+			<p>Number: {count}</p>
+			<button onClick={() => setCount(count - 1)}>-1</button>
+			<button onClick={() => setCount(count + 1)}>+1</button>
+		</div>
+	)
+}
+
+export default App
+```
+
+This code is a bit tidier than what we had before, and it's now super easy to
+replace a traditional `useState` hook with a `useStateWithLocalStorage` hook —
+you just need to pass the local storage key as the second argument, and the
+state will be persisted between sessions.
+
+## Testing
+
+We can use
+[`react-hooks-testing-library`](https://github.com/testing-library/react-hooks-testing-library)
+to test our implementation of `useStateWithLocalStorage`:
+
+```jsx
+import { renderHook, act } from '@testing-library/react-hooks'
+
+import useStateWithLocalStorage from './useStateWithLocalStorage'
+
+const TEST_KEY = 'key'
+const TEST_VALUE = { test: 'test' }
+
+describe('useStateWithLocalStorage', () => {
+	it('should set localStorage with default value', () => {
+		renderHook(() => useStateWithLocalStorage(TEST_VALUE, TEST_KEY))
+		expect(JSON.parse(localStorage.getItem(TEST_KEY))).toEqual(TEST_VALUE)
+	})
+
+	it('should set the default value from localStorage if it exists', () => {
+		// set the localStorage to the test value
+		localStorage.setItem(TEST_KEY, JSON.stringify(TEST_VALUE))
+
+		// initialise with an empty object
+		const { result } = renderHook(() => useStateWithLocalStorage({}, TEST_KEY))
+
+		// check that the value is what is stored in localStorage (and not an empty object)
+		const [value] = result.current
+		expect(value).toEqual(TEST_VALUE)
+
+		// expect value to be taken from localStorage (rather than empty object)
+		expect(JSON.parse(localStorage.getItem(TEST_KEY))).toEqual(TEST_VALUE)
+	})
+
+	it('should update localStorage when state changes', () => {
+		// initialise with test object
+		const { result } = renderHook(() =>
+			useStateWithLocalStorage(TEST_VALUE, TEST_KEY),
+		)
+
+		const [, setValue] = result.current
+
+		// set the state to something new
+		const newValue = { anotherValue: 'Some value' }
+		act(() => {
+			setValue(newValue)
+		})
+
+		// localStorage should have updated to new value
+		expect(JSON.parse(localStorage.getItem(TEST_KEY))).toEqual(newValue)
+	})
+})
+```
+
+Let's break this down. Our `useStateWithLocalStorage` hook needs to do three
+things:
+
+1. it needs to initialise the `localStorage` state with the default argument
+   that gets passed in;
+2. if there is already a value stored in `localStorage`, it should initialise
+   the state to that value;
+3. when we update the state, it should update the value stored in
+   `localStorage`.
+
+### Initialising the state with the default argument
+
+The first test, "should set `localStorage` with default value", deals with
+requirement one. We use react-hooks-testing-library's renderHook to initialise
+our hook with a test value and a test `localStorage` key, and then check that
+the value stored in `localStorage` matches what we passed in.
+
+### Initialising the state to the value in localStorage
+
+The second test, "should set the default value from `localStorage` if it
+exists", checks that the second requirement is met. We set the `localStorage` to
+the test value before rendering our hook. We then initialise our state with an
+empty object, pulling the result from react-hooks-testing-library's `renderHook`
+method. Finally, we deconstruct the state from `result.current` to check that it
+matches the `localStorage` state rather than an empty object, and check that
+`localStorage` itself hasn't been updated.
+
+### Updating the localStorage state
+
+The last test, "should update `localStorage` when state changes", deals with the
+third requirement. We initialise our hook, and this time pull the `setValue`
+function from `result.current` so that we can update the state. We then check
+that `localStorage` has been updated with the new state value.
+
+We can also write some tests to check that the counter integrates with
+`localStorage` properly:
+
+```jsx
+it('should initialise with the value stored in localStorage', () => {
+	// set the localStorage to a value other than 0
+	localStorage.setItem('count', 15)
+
+	// render the App and check it initialises to the value in localStorage
+	render(<App />)
+	screen.getByText(/Number: 15/)
+
+	// click the increment button and check the localStorage is updated
+	const incrementButton = screen.getByText(/\+1/)
+	fireEvent.click(incrementButton)
+	screen.getByText(/Number: 16/)
+	expect(localStorage.getItem('count')).toBe('16')
+})
+```
+
+Here, we set the `localStorage` count to an initial value of 15, then render our
+component and click on the increment button. We can then check that the count
+itself has increased, and also that the value stored in `localStorage` matches.
+
+It's also a good idea to clear `localStorage` between tests to ensure that each
+test is fully isolated:
+
+```js
+beforeEach(() => {
+	localStorage.clear()
+})
+```
+
+Note that if you are using an older version of jest/jsdom, you will need to mock
+`localStorage` to get it to work when you run your tests. In your
+`setupTests.js` file, you can add the following:
+
+```js
+class LocalStorageMock {
+	constructor() {
+		this.store = {}
+	}
+
+	clear() {
+		this.store = {}
+	}
+
+	getItem(key) {
+		return this.store[key] || null
+	}
+
+	setItem(key, value) {
+		this.store[key] = value
+	}
+
+	removeItem(key) {
+		delete this.store[key]
+	}
+}
+
+global.localStorage = new LocalStorageMock()
+```
+
+This creates a barebones implementation of `localStorage` so we can run the
+tests above and check that everything is working as expected.
+
+To sum up, using `localStorage` is a great way of improving user experience by
+storing state between sessions, and by using custom React hooks, you can do it
+in a reusable, maintainable and testable way.

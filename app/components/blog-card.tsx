@@ -34,6 +34,7 @@ export function BlogCard({
 				'rounded-3xl bg-muted transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
 				className,
 			)}
+			prefetch="intent"
 		>
 			<LazyImage
 				width={432}
@@ -50,7 +51,7 @@ export function BlogCard({
 				<h3 className="mb-2 text-3xl" id={`post-title-${id}`}>
 					{title}
 				</h3>
-				<p className="text-xl font-light">{description}</p>
+				<p className="text-base">{description}</p>
 			</div>
 		</Link>
 	)

@@ -9,15 +9,18 @@ import clsx from 'clsx'
 import { format } from 'date-fns'
 import * as React from 'react'
 import { BlogCard } from '#app/components/blog-card'
+import { Callout } from '#app/components/callout'
 import { LazyImage } from '#app/components/lazy-image'
 import { ExternalLink } from '#app/components/text-link'
 import { Icon } from '#app/components/ui/icon'
 import { prisma } from '#app/utils/db.server'
 import { useMdxComponent } from '#app/utils/mdx'
 import { calculateReadingTime, getMdxPage } from '#app/utils/mdx.server'
+import { generateSEOMetaTags } from '#app/utils/seo'
 import { ConverkitSignupForm } from '../_converkit+/signup-form'
 
-export async function loader({ params }: LoaderFunctionArgs) {
+export async function loader({ params, request }: LoaderFunctionArgs) {
+	const ogUrl = request.url
 	const post = await prisma.post.findUnique({
 		where: { slug: params.slug },
 		select: {
@@ -115,16 +118,15 @@ export async function loader({ params }: LoaderFunctionArgs) {
 	const content = await getMdxPage(post.content)
 	const readingTime = calculateReadingTime(post.content)
 
-	return json({ ...post, content, readingTime, relatedPosts })
+	return json({ ...post, content, readingTime, relatedPosts, ogUrl })
 }
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
-	return [
-		{
-			title: `${data?.postMeta?.title} | Jack Taylor`,
-		},
-		{ name: 'description', content: data?.postMeta?.description ?? '' },
-	]
+	return generateSEOMetaTags({
+		title: data?.postMeta?.title,
+		description: data?.postMeta?.description ?? undefined,
+		url: data?.ogUrl ?? '',
+	})
 }
 
 export const handle: SEOHandle = {
@@ -173,7 +175,7 @@ export default function BlogPostRoute() {
 					/>
 				) : null}
 				<article className="py-6">
-					<div className="prose mx-auto dark:prose-invert lg:prose-xl prose-headings:font-medium">
+					<div className="prose mx-auto max-w-[820px] dark:prose-invert lg:prose-xl prose-headings:font-medium">
 						<span className="not-prose mb-2 block text-base text-muted-foreground">
 							{format(new Date(data.postMeta?.date ?? ''), 'd MMMM yyyy')} ·{' '}
 							{data.readingTime.text}
@@ -181,7 +183,11 @@ export default function BlogPostRoute() {
 						<h1 className="not-prose mb-6 text-4xl lg:text-5xl">
 							{data.postMeta?.title}
 						</h1>
-						<Component />
+						<Component
+							components={{
+								Callout,
+							}}
+						/>
 					</div>
 					<div className="mt-12 flex justify-between border-t border-muted-foreground py-6 text-lg">
 						<ExternalLink

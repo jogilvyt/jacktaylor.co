@@ -12,6 +12,7 @@ import { Hero } from '#app/components/hero'
 import { LazyImage } from '#app/components/lazy-image'
 import { ToggleGroup, ToggleGroupItem } from '#app/components/ui/toggle-group'
 import { prisma } from '#app/utils/db.server'
+import { generateSEOMetaTags } from '#app/utils/seo.ts'
 import { ConverkitSignupForm } from '../_converkit+/signup-form'
 
 const filterSchema = z.object({
@@ -87,15 +88,17 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 	const [posts, categories] = await Promise.all([getPosts, getCategories])
 
-	return json({ posts, categories })
+	return json({ posts, categories, ogUrl: url })
 }
 
-export const meta: MetaFunction = () => [
-	{
-		title: 'Blog posts | Jack Taylor',
-	},
-	{ name: 'description', content: 'Helpful content for software engineers.' },
-]
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+	return generateSEOMetaTags({
+		title: 'Blog posts',
+		ogImageTitle: 'JackTaylor.co',
+		description: 'Helpful content for software engineers.',
+		url: data?.ogUrl ?? '',
+	})
+}
 
 export default function BlogPostsRoute() {
 	const [searchParams, setSearchParams] = useSearchParams()

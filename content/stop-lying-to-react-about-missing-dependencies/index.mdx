@@ -1,0 +1,284 @@
+---
+slug: stop-lying-to-react-about-missing-dependencies
+title: Stop lying to React about missing dependencies
+date: 2021-02-19
+description:
+  Deal with the 'React Hook useEffect has a missing dependency' warning once and
+  for all.
+categories:
+  - React
+imageUrl: ./banner.jpg
+imageAlt:
+imageCredit:
+---
+
+If you have ever worked with `useEffect` in React, you have probably come across
+the following lint warning:
+
+```bash
+React Hook useEffect has a missing dependency.
+Either include it or remove the dependency array.
+```
+
+Sometimes the fix is as simple as just adding the required dependency, but often
+this results in some pretty unexpected behaviour that leaves you scratching your
+head. Worse yet, your code might get stuck in an infinite loop.
+
+So how can we deal with this warning properly rather than just ignoring it?
+
+With the advent of React Hooks, `useEffect` has been seen as a way of handling
+lifecycle methods that were previously accessible on component classes (e.g.
+`componentDidMount` or `componentWillUpdate`). The reality is a little subtler
+and requires a shift in thinking away from object-oriented programming and
+towards functional programming.
+
+[According to Wikipedia:](https://en.wikipedia.org/wiki/Pure_function)
+
+> A pure function is a function that has the following properties:
+>
+> 1. Its return value is the same for the same arguments (no variation with
+>    local static variables, non-local variables, mutable reference arguments or
+>    input streams from I/O devices).
+> 2. Its evaluation has no side effects (no mutation of local static variables,
+>    non-local variables, mutable reference arguments or I/O streams).
+
+In the context of React, a pure functional component is one that takes some
+props (arguments) and renders some content. You can be sure that rendering the
+component with the same props will always output the same HTML. The component
+won't have any internal state and won't interact with or modify any external
+variables.
+
+This is great for presentational components, but in the real world, there will
+be cases where we do need side effects (e.g. to load some data from an API or to
+persist some state between renders). This is where React Hooks come in.
+
+So what does `useEffect` really do? Well, as the name implies, it's a way of
+handling side effects. It takes an array of dependencies, and if any of those
+dependencies have changed since the last render, it runs the function you
+provide it. This means we can handle things like loading data from an API only
+when we want to — not every time the component rerenders.
+
+<Callout>
+	If you are interested in how it works under the hood, React relies on the
+	order of the Hooks in your component to know how to handle side effects
+	between renders, which is why you can only call Hooks at the top level. You
+	can read more about this in the [React
+	documentation](https://react.dev/reference/rules/rules-of-hooks).
+</Callout>
+
+However, this dependency array often causes problems. If we want to run an
+effect once on mount, you can use an empty dependency array. For example, say we
+want to use `axios` to fetch some data when the component renders:
+
+```jsx
+const Item = ({ params }) => {
+	const [data, setData] = useState(null)
+
+	useEffect(() => {
+		const res = axios.get('/some/url', { params })
+		setData(res)
+	}, [])
+}
+```
+
+This is where you run into the lint warning:
+
+```bash
+React Hook useEffect has a missing dependency: 'params'.
+Either include it or remove the dependency array.
+```
+
+What does this warning mean? Well, the code inside the `useEffect` is relying on
+the params variable to make the API request. When the component re-renders, the
+value of params inside the `useEffect` could potentially be out of date. Since
+the effect has only run once, it will only have the value of params at the very
+first render.
+
+You might be wondering if this is really a problem, aside from the annoying lint
+warnings that will show up in your console. In this instance, your code will
+work as expected and there aren't any issues. However, not including the correct
+dependencies has the potential to introduce subtle bugs that can be a nightmare
+to solve.
+
+In his post (A Complete Guide to
+useEffect)[https://overreacted.io/a-complete-guide-to-useeffect/#dont-lie-to-react-about-dependencies]
+(which is well worth a read), Dan Abramov uses the example of a counter app with
+an interval:
+
+```jsx
+const Counter = () => {
+	const [count, setCount] = useState(0)
+
+	useEffect(() => {
+		const id = setInterval(() => {
+			setCount(count + 1)
+		}, 1000)
+		return () => clearInterval(id)
+	}, [])
+
+	return <h1>{count}</h1>
+}
+```
+
+You only want to set the interval running once, but as your effect doesn't have
+`count` as part of its dependency array, it will only ever have the default
+value (in this case, 0). What you will see is a 0 that is incremented to 1 after
+a second and then never changes because we are setting the `count` to be `0 + 1`
+on each instance of the interval.
+
+As Dan Abramov says:
+
+> Don't lie to React about dependencies.
+
+So, the first common issue with `useEffect` is that you only want to run it once
+on mount but are running into lint warnings. There is another issue, though,
+that we can use our example to illustrate.
+
+You might try to solve the lint warning by adding `params` to the dependency
+array of the `useEffect`:
+
+```jsx
+const Item = ({ params }) => {
+	const [data, setData] = useState(null)
+
+	useEffect(() => {
+		const res = axios.get('/some/url', { params })
+		setData(res)
+	}, [params])
+}
+```
+
+In theory, this should work. The `params` don't change, so it should only run
+the `useEffect` once on mount. However, if `params` is an object, you will find
+that the `useEffect` will run every time the component re-renders — even if
+`params` is the same.
+
+This happens because JavaScript doesn't handle object equality:
+
+```js
+{ some: 'value' } === { some: 'value' } = false
+```
+
+When `useEffect` checks to see if any of the dependencies have changed, `params`
+will never be equal to its previous value, so the code inside the effect will
+run.
+
+This can end up with our code getting stuck in some pretty nasty infinite loops.
+So how can we solve these two problems?
+
+## Solving Issues With the Dependency Array
+
+As always, the first thing to do when you encounter an issue like this is to
+take a step back and see if you've coded yourself into a corner. There are often
+simple solutions to a problem if you take a bit of time to refactor what you've
+done. For example, should you really be making an API call in a component or
+should that code be decoupled and the data passed down as props?
+
+Taking some time to step away and get some perspective means you can often avoid
+problems like this altogether.
+
+If you've done this and there's no alternative but to use a `useEffect`, then
+it's time to reach for `useRef`.
+
+### Refs to the rescue
+
+React's `useRef` Hook gives us a way of storing a mutable value between renders.
+From the
+[React `useRef` docs](https://react.dev/reference/react/useRef#referencing-a-value-with-a-ref):
+
+> `useRef` returns a ref object with a single current property initially set to
+> the initial value you provided. On the next renders, `useRef` will return the
+> same object. You can change its current property to store information and read
+> it later.
+
+We can use a ref to keep track of whether some code has run or not. If not, then
+run it. If it has, then skip it. With our example, this would look something
+like this:
+
+```jsx
+const Item = ({ params }) => {
+	const hasFetchedData = useRef(false)
+	const [data, setData] = useState(null)
+
+	useEffect(() => {
+		if (!hasFetchedData.current) {
+			const res = axios.get('/some/url', { params })
+			setData(res)
+			hasFetchedData.current = true
+		}
+	}, [params])
+}
+```
+
+Inside the `useEffect`, we check to see if `hasFetchedData.current` is `false`.
+If it is, then we hit the API and update the ref to be `true`. That means the
+next time the component renders, `hasFetchedData.current` will be `true` and we
+won't make the API call. The `useEffect` will still run on every render, but the
+API call will only run once.
+
+In effect, we have a "gate". We should only run the code inside the `useEffect`
+when certain conditions have been met.
+
+### Dealing with non-primitives
+
+As outlined above, non-primitives (i.e. objects or arrays) in the dependency
+array will cause `useEffect` to run on every render, as JavaScript is unable to
+determine object equality. To get around this, we will need to do some form of
+deep comparison between the new and old values when the `useEffect` runs.
+
+This means we'll need to keep a reference to the previous value of the
+dependency so we can compare it to the new value when the `useEffect` runs and
+checks whether or not it's changed. Once again, refs come to the rescue. We can
+use `useRef` to store the previous value and update it inside the `useEffect` if
+the value has changed (which we can check by using some kind of deep comparison
+function).
+
+Say we want to do something similar to the example above, but we want to fetch
+the data every time the params value changes. Just passing params in the
+dependency array will mean the `useEffect` runs on every re-render, which is not
+what we want. Instead, we can do this:
+
+```jsx
+const Item = ({ params }) => {
+	const prevParams = useRef(params)
+	const [data, setData] = useState(null)
+
+	useEffect(() => {
+		if (!isDeepEqual(prevParams.current, params)) {
+			const res = axios.get('/some/url', { params })
+			setData(res)
+			prevParams.current = params
+		}
+	}, [params])
+}
+```
+
+Note: In this example, we are using `fast-deep-equal`, but any deep comparison
+function would work.
+
+Let's break this down:
+
+1. First, we set up a ref to track the previous `params` value.
+2. In the `useEffect`, we do a deep comparison between `prevParams.current` and
+   params and only make the API call if they're not equal.
+3. Finally, we update our `prevParams.current` ref to the new `params` value.
+
+This means the API call will now only run when `params` changes.
+
+## Conclusion
+
+Working with `useEffect` is one of the things that has highlighted how much of a
+paradigm shift Hooks have been for React. It really forces you to think about
+what's going on under the hood, and this can often be frustrating when it slows
+down the process of implementing what should be a simple piece of functionality.
+To quote Dan Abramov's article again when talking about starting out with Hooks:
+
+> There won't be much to learn. In fact, we'll spend most of our time
+> unlearning.
+
+However, once you really start "thinking in Hooks", you will reap the benefits.
+Taking the time to truly understand what's going on means you will ultimately
+write cleaner and more performant code.
+
+These lint rules exist for a reason, so we should all do our best to follow them
+— and stop lying to React about dependencies.
