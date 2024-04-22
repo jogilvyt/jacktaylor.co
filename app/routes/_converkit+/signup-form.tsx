@@ -99,7 +99,7 @@ export function ConverkitSignupForm({
 	})
 
 	const content = (
-		<div className="grid grid-cols-3 gap-x-24">
+		<div className="grid grid-cols-3 gap-x-12">
 			<div className="col-span-3 md:col-span-2">
 				<h2 className="mb-8 text-4xl lg:text-5xl">{title}</h2>
 				<div className="mb-8 flex flex-col gap-y-4 text-lg font-light">
