@@ -6,6 +6,7 @@ import { HoneypotInputs } from 'remix-utils/honeypot/react'
 import { SpamError } from 'remix-utils/honeypot/server'
 import { z } from 'zod'
 import { FormControl } from '#app/components/form'
+import { InboxIllustration } from '#app/components/illustrations/inbox'
 import { TextLink } from '#app/components/text-link'
 import { Button } from '#app/components/ui/button'
 import { Icon } from '#app/components/ui/icon'
@@ -167,12 +168,8 @@ export function ConverkitSignupForm({
 					<TextLink to="/privacy-policy">Privacy Policy</TextLink>
 				</p>
 			</div>
-			<div className="col-span-1 hidden md:block">
-				<img
-					src="/images/phones.svg"
-					className="mx-auto w-full max-w-[250px]"
-					alt=""
-				/>
+			<div className="col-span-1 hidden items-center md:flex">
+				<InboxIllustration className="mx-auto w-full max-w-[300px]" />
 			</div>
 		</div>
 	)

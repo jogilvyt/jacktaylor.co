@@ -21,7 +21,7 @@ function ValidationMessage({
 	return (
 		<span
 			className={cn(
-				'nger absolute bottom-0 left-0 text-sm text-destructive',
+				'danger absolute bottom-0 left-0 text-sm text-destructive-foreground',
 				className,
 			)}
 			{...props}
