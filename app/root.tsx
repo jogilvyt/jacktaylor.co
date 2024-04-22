@@ -15,6 +15,7 @@ import {
 	Outlet,
 	Scripts,
 	ScrollRestoration,
+	unstable_useViewTransitionState,
 	useFetcher,
 	useFetchers,
 	useLoaderData,
@@ -182,11 +183,20 @@ function App() {
 	const nonce = useNonce()
 	const theme = useTheme()
 	useToast(data.toast)
+	const isTransitioning = unstable_useViewTransitionState('*')
+
+	React.useEffect(() => {
+		if (isTransitioning && window.scrollY > 64) {
+			document.documentElement.classList.add('should-transition-navigation')
+		} else {
+			document.documentElement.classList.remove('should-transition-navigation')
+		}
+	}, [isTransitioning])
 
 	return (
 		<Document nonce={nonce} theme={theme} env={data.ENV}>
 			<div className="flex h-screen flex-col justify-between">
-				<header className="container mt-8 lg:mt-16">
+				<header className="navigation-view-transition container mt-8 lg:mt-16">
 					<nav>
 						<div className="flex flex-wrap items-center justify-between gap-4 sm:flex-nowrap md:gap-8">
 							<Navigation />
@@ -199,7 +209,7 @@ function App() {
 					<Outlet />
 				</main>
 
-				<footer className="bg-card pb-6 pt-6 md:pt-16">
+				<footer className="footer-view-transition bg-card pb-6 pt-6 md:pt-16">
 					<div className="container">
 						<div className="mb-4 flex flex-col items-center justify-between gap-4 md:mb-0 md:flex-row md:items-start md:gap-0">
 							<Link

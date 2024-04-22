@@ -7,6 +7,7 @@ import {
 import {
 	unstable_useViewTransitionState,
 	useLoaderData,
+	useNavigation,
 	useParams,
 } from '@remix-run/react'
 import clsx from 'clsx'
@@ -156,6 +157,20 @@ export default function BlogPostRoute() {
 	)
 	const Component = useMdxComponent({ content: data.content })
 
+	const navigation = useNavigation()
+
+	let enableTransition = false
+
+	// if the user is navigating back to the homepage, or to another blog post, disable the transition
+	if (
+		navigation?.location?.pathname !== '/' &&
+		!navigation?.location?.pathname.includes('/blog/')
+	) {
+		enableTransition = true
+	}
+
+	const setTransitionClassname = isTransitioning && enableTransition
+
 	const windowRef = React.useRef<Window | null>(null)
 
 	React.useEffect(() => {
@@ -180,18 +195,27 @@ export default function BlogPostRoute() {
 						alt={data.postMeta?.imageAlt ?? ''}
 						width={982}
 						height={600}
-						className={cn('max-h-[320px] rounded-3xl md:max-h-none', {
-							'blog-card-image-transition': isTransitioning,
+						className={cn('max-h-[320px] w-fit rounded-3xl md:max-h-none', {
+							'blog-card-image-transition': setTransitionClassname,
 						})}
 					/>
 				) : null}
 				<article className="py-6">
 					<div className="prose mx-auto max-w-[820px] dark:prose-invert lg:prose-xl prose-headings:font-medium">
-						<span className="not-prose blog-card-date-transition mb-2 block text-base text-muted-foreground">
+						<span
+							className={cn(
+								'not-prose mb-2 block text-base text-muted-foreground',
+								{ 'blog-card-date-transition': setTransitionClassname },
+							)}
+						>
 							{format(new Date(data.postMeta?.date ?? ''), 'd MMMM yyyy')} ·{' '}
 							{data.readingTime.text}
 						</span>
-						<h1 className="not-prose blog-card-title-transition mb-6 text-4xl lg:text-5xl">
+						<h1
+							className={cn('not-prose mb-6 text-4xl lg:text-5xl', {
+								'blog-card-title-transition': setTransitionClassname,
+							})}
+						>
 							{data.postMeta?.title}
 						</h1>
 						<Component

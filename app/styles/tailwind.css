@@ -107,6 +107,14 @@
 		@apply rounded-lg ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 motion-reduce:transition-none;
 	}
 
+	.navigation-view-transition {
+		view-transition-name: navigation;
+	}
+
+	.footer-view-transition {
+		view-transition-name: footer;
+	}
+
 	.blog-card-image-transition {
 		view-transition-name: blog-card-image;
 	}
