@@ -14,7 +14,7 @@
 		--foreground: 203, 20%, 18%;
 
 		--muted: 210 11% 96%;
-		--muted-foreground: 216 7% 58%;
+		--muted-foreground: 216 5% 40%;
 
 		--popover: 0 0% 100%;
 		--popover-foreground: 222.2 84% 4.9%;
@@ -36,7 +36,7 @@
 		--accent-foreground: 286 100% 78%;
 
 		--destructive: 0 70% 50%;
-		--destructive-foreground: 210 40% 98%;
+		--destructive-foreground: 357 85% 64%;
 
 		--ring: 0 0% 0%;
 
@@ -73,7 +73,7 @@
 		--accent-foreground: 286 100% 78%;
 
 		--destructive: 0 60% 40%;
-		--destructive-foreground: 0 85.7% 97.3%;
+		--destructive-foreground: 357 85% 64%;
 
 		--ring: 0 0% 100%;
 	}
@@ -105,5 +105,25 @@
 		width: auto;
 
 		@apply rounded-lg ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 motion-reduce:transition-none;
+	}
+
+	.navigation-view-transition {
+		view-transition-name: navigation;
+	}
+
+	.footer-view-transition {
+		view-transition-name: footer;
+	}
+
+	.blog-card-image-transition {
+		view-transition-name: blog-card-image;
+	}
+
+	.blog-card-title-transition {
+		view-transition-name: blog-card-title;
+	}
+
+	.blog-card-date-transition {
+		view-transition-name: blog-card-date;
 	}
 }

@@ -5,13 +5,19 @@
 // ensure the user gets the right status code and we can display a nicer error
 // message for them than the Remix and/or browser default.
 
-import { Link, useLocation } from '@remix-run/react'
+import { type SEOHandle } from '@nasa-gcn/remix-seo'
+import { useLocation } from '@remix-run/react'
 import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
 import { LazyImage } from '#app/components/lazy-image'
+import { Link } from '#app/components/transition-links'
 import { Icon } from '#app/components/ui/icon.tsx'
 
 export async function loader() {
 	throw new Response('Not found', { status: 404 })
+}
+
+export const handle: SEOHandle = {
+	getSitemapEntries: () => null,
 }
 
 export default function NotFound() {

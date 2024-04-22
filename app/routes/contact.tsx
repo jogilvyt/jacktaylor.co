@@ -1,7 +1,11 @@
 import { conform, useForm } from '@conform-to/react'
 import { getFieldsetConstraint, parse } from '@conform-to/zod'
 import * as E from '@react-email/components'
-import { type DataFunctionArgs, json } from '@remix-run/node'
+import {
+	type DataFunctionArgs,
+	json,
+	type LoaderFunctionArgs,
+} from '@remix-run/node'
 import { useFetcher, type MetaFunction } from '@remix-run/react'
 import { HoneypotInputs } from 'remix-utils/honeypot/react'
 import { SpamError } from 'remix-utils/honeypot/server'
@@ -16,8 +20,7 @@ import { Label } from '#app/components/ui/label'
 import { Textarea } from '#app/components/ui/textarea'
 import { sendEmail } from '#app/utils/email.server'
 import { honeypot } from '#app/utils/honeypot.server'
-
-export const meta: MetaFunction = () => [{ title: 'Contact me | Jack Taylor' }]
+import { generateSEOMetaTags } from '#app/utils/seo.ts'
 
 const ContactFormSchema = z.object({
 	name: z
@@ -79,6 +82,18 @@ export async function action({ request }: DataFunctionArgs) {
 	return json(submission)
 }
 
+export const loader = ({ request }: LoaderFunctionArgs) => {
+	return json({ ogUrl: request.url })
+}
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+	return generateSEOMetaTags({
+		title: 'Contact me',
+		description: 'Reach out, say hi, or ask a question.',
+		url: data?.ogUrl ?? '',
+	})
+}
+
 export default function ContactRoute() {
 	const fetcher = useFetcher<typeof action>()
 	// Last submission returned by the server
@@ -99,17 +114,16 @@ export default function ContactRoute() {
 			<Hero
 				title="Reach out, say hi,"
 				secondaryTitle="or ask a question."
-				images={[
+				image={
 					<LazyImage
-						key="contact-hero-image"
 						width={320}
 						height={400}
 						imageUrl={`/images/headshot.jpg`}
 						dataUri="data:image/bmp;base64,Qk32BAAAAAAAADYAAAAoAAAACAAAAAgAAAABABgAAAAAAMAAAAATCwAAEwsAAAAAAAAAAAAApqm4maGyd4ykWniXXnCRa3COZm2FSmR3uLe1qamqgYOLVldrUkxfZV9mZ2pnVGZexsS5tLGrg36DSDRSQSg9YVtPanBaWm5VzM3EuLq4g4eYQkl3RElranBycYF0XXxr0NTQvsTHj5yzYneganqZg4+YgpaRZYyD2dvWy8/PqrO/kp2yl56toaepl6addpmL4+HW2djPxMS/trSxuLKsubWpqLCbhqKG6OPV4NvOz8q8xLytxLmpwrqlr7OYjKWC"
 						alt=""
 						className="rounded-3xl"
-					/>,
-				]}
+					/>
+				}
 				condensed
 			/>
 			<section className="bg-muted py-14 md:py-32">

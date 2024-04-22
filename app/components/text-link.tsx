@@ -1,5 +1,6 @@
-import { Link, type LinkProps } from '@remix-run/react'
+import { type LinkProps } from '@remix-run/react'
 import { cn } from '#app/utils/misc'
+import { Link } from './transition-links'
 
 const linkClassNames =
 	'rounded-sm underline ring-offset-background transition-all hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'

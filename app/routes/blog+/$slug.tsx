@@ -1,18 +1,33 @@
-import { json, type LoaderFunctionArgs } from '@remix-run/node'
-import { Link, useLoaderData, useParams } from '@remix-run/react'
+import { type SEOHandle } from '@nasa-gcn/remix-seo'
+import {
+	json,
+	type MetaFunction,
+	type LoaderFunctionArgs,
+} from '@remix-run/node'
+import {
+	unstable_useViewTransitionState,
+	useLoaderData,
+	useNavigation,
+	useParams,
+} from '@remix-run/react'
 import clsx from 'clsx'
 import { format } from 'date-fns'
 import * as React from 'react'
 import { BlogCard } from '#app/components/blog-card'
+import { Callout } from '#app/components/callout'
 import { LazyImage } from '#app/components/lazy-image'
 import { ExternalLink } from '#app/components/text-link'
+import { Link } from '#app/components/transition-links'
 import { Icon } from '#app/components/ui/icon'
 import { prisma } from '#app/utils/db.server'
 import { useMdxComponent } from '#app/utils/mdx'
 import { calculateReadingTime, getMdxPage } from '#app/utils/mdx.server'
+import { cn } from '#app/utils/misc'
+import { generateSEOMetaTags } from '#app/utils/seo'
 import { ConverkitSignupForm } from '../_converkit+/signup-form'
 
-export async function loader({ params }: LoaderFunctionArgs) {
+export async function loader({ params, request }: LoaderFunctionArgs) {
+	const ogUrl = request.url
 	const post = await prisma.post.findUnique({
 		where: { slug: params.slug },
 		select: {
@@ -110,13 +125,51 @@ export async function loader({ params }: LoaderFunctionArgs) {
 	const content = await getMdxPage(post.content)
 	const readingTime = calculateReadingTime(post.content)
 
-	return json({ ...post, content, readingTime, relatedPosts })
+	return json({ ...post, content, readingTime, relatedPosts, ogUrl })
+}
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+	return generateSEOMetaTags({
+		title: data?.postMeta?.title,
+		description: data?.postMeta?.description ?? undefined,
+		url: data?.ogUrl ?? '',
+	})
+}
+
+export const handle: SEOHandle = {
+	getSitemapEntries: async request => {
+		const blogs = await prisma.post.findMany({
+			select: {
+				slug: true,
+			},
+		})
+		return blogs.map(blog => {
+			return { route: `/blog/${blog.slug}`, priority: 0.7 }
+		})
+	},
 }
 
 export default function BlogPostRoute() {
 	const data = useLoaderData<typeof loader>()
 	const params = useParams()
+	const isTransitioning = unstable_useViewTransitionState(
+		`/blog/${params.slug}`,
+	)
 	const Component = useMdxComponent({ content: data.content })
+
+	const navigation = useNavigation()
+
+	let enableTransition = false
+
+	// if the user is navigating back to the homepage, or to another blog post, disable the transition
+	if (
+		navigation?.location?.pathname !== '/' &&
+		!navigation?.location?.pathname.includes('/blog/')
+	) {
+		enableTransition = true
+	}
+
+	const setTransitionClassname = isTransitioning && enableTransition
 
 	const windowRef = React.useRef<Window | null>(null)
 
@@ -142,19 +195,34 @@ export default function BlogPostRoute() {
 						alt={data.postMeta?.imageAlt ?? ''}
 						width={982}
 						height={600}
-						className="max-h-[320px] rounded-3xl md:max-h-none"
+						className={cn('max-h-[320px] w-fit rounded-3xl md:max-h-none', {
+							'blog-card-image-transition': setTransitionClassname,
+						})}
 					/>
 				) : null}
 				<article className="py-6">
-					<div className="prose mx-auto dark:prose-invert lg:prose-xl prose-headings:font-medium">
-						<span className="not-prose mb-2 block text-base text-muted-foreground">
+					<div className="prose mx-auto max-w-[820px] dark:prose-invert lg:prose-xl prose-headings:font-medium">
+						<span
+							className={cn(
+								'not-prose mb-2 block text-base text-muted-foreground',
+								{ 'blog-card-date-transition': setTransitionClassname },
+							)}
+						>
 							{format(new Date(data.postMeta?.date ?? ''), 'd MMMM yyyy')} ·{' '}
 							{data.readingTime.text}
 						</span>
-						<h1 className="not-prose mb-6 text-4xl lg:text-5xl">
+						<h1
+							className={cn('not-prose mb-6 text-4xl lg:text-5xl', {
+								'blog-card-title-transition': setTransitionClassname,
+							})}
+						>
 							{data.postMeta?.title}
 						</h1>
-						<Component />
+						<Component
+							components={{
+								Callout,
+							}}
+						/>
 					</div>
 					<div className="mt-12 flex justify-between border-t border-muted-foreground py-6 text-lg">
 						<ExternalLink

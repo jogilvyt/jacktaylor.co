@@ -12,6 +12,7 @@ import { Hero } from '#app/components/hero'
 import { LazyImage } from '#app/components/lazy-image'
 import { ToggleGroup, ToggleGroupItem } from '#app/components/ui/toggle-group'
 import { prisma } from '#app/utils/db.server'
+import { generateSEOMetaTags } from '#app/utils/seo.ts'
 import { ConverkitSignupForm } from '../_converkit+/signup-form'
 
 const filterSchema = z.object({
@@ -87,10 +88,17 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 	const [posts, categories] = await Promise.all([getPosts, getCategories])
 
-	return json({ posts, categories })
+	return json({ posts, categories, ogUrl: url })
 }
 
-export const meta: MetaFunction = () => [{ title: 'Blog posts | Jack Taylor' }]
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+	return generateSEOMetaTags({
+		title: 'Blog posts',
+		ogImageTitle: 'JackTaylor.co',
+		description: 'Helpful content for software engineers.',
+		url: data?.ogUrl ?? '',
+	})
+}
 
 export default function BlogPostsRoute() {
 	const [searchParams, setSearchParams] = useSearchParams()
@@ -100,17 +108,16 @@ export default function BlogPostsRoute() {
 		<>
 			<Hero
 				title="Helpful content for software engineers."
-				images={[
+				image={
 					<LazyImage
-						key="blog-hero-image"
 						width={670}
 						height={320}
 						imageUrl="/images/laptop.jpg"
 						dataUri="data:image/bmp;base64,Qk32BAAAAAAAADYAAAAoAAAACAAAAAgAAAABABgAAAAAAMAAAAATCwAAEwsAAAAAAAAAAAAAAAAXCAcSKCIRPDUlRj44RDxANCw4DgEhIRgkMSYgST0nW09BYlhZXFRiSkJVLiIzLSAoPi8mWUkza15TcWduaGJ3VE5nOSs8JhUjOyojWEc1al1Xbmd0ZGJ8T01pNSY5CgAYKRYZSDosWlBOXFpoUVZwPUBeJBAvAAAQCAAMMCQaPzs3QURONj9WIypIAwAiAAASAAAGEQgAIiMKIyslGSUwAQ0sAAAYAAAUAAAGAAAADxUAERwABhURAAAZAAAU"
 						alt=""
 						className="hidden w-full rounded-3xl md:block"
-					/>,
-				]}
+					/>
+				}
 				condensed
 			/>
 			<section className="container pb-12 md:pb-24">

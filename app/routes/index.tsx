@@ -1,18 +1,19 @@
-import { json } from '@remix-run/node'
-import { Link, useLoaderData, type MetaFunction } from '@remix-run/react'
+import { type LoaderFunctionArgs, json } from '@remix-run/node'
+import { useLoaderData, type MetaFunction } from '@remix-run/react'
 import clsx from 'clsx'
 import { BlogCard } from '#app/components/blog-card'
 import { Hero } from '#app/components/hero'
-import { HeroPeople, HeroScene } from '#app/components/illustrations/hero'
+import { HeroImage } from '#app/components/illustrations/hero'
 import { LazyImage } from '#app/components/lazy-image'
+import { SayHiBlock } from '#app/components/say-hi-block'
+import { Link } from '#app/components/transition-links'
 import { Button } from '#app/components/ui/button'
 import { Icon } from '#app/components/ui/icon'
 import { prisma } from '#app/utils/db.server'
+import { generateSEOMetaTags } from '#app/utils/seo.ts'
 import { ConverkitSignupForm } from './_converkit+/signup-form'
 
-export const meta: MetaFunction = () => [{ title: 'Jack Taylor' }]
-
-export async function loader() {
+export async function loader({ request }: LoaderFunctionArgs) {
 	const latestPosts = await prisma.post.findMany({
 		orderBy: {
 			postMeta: {
@@ -40,7 +41,16 @@ export async function loader() {
 		take: 3,
 	})
 
-	return json({ latestPosts })
+	return json({ latestPosts, ogUrl: request.url })
+}
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+	return generateSEOMetaTags({
+		title: 'Home',
+		ogImageTitle: 'JackTaylor.co',
+		description: 'Helpful content for software engineers.',
+		url: data?.ogUrl ?? '',
+	})
 }
 
 export default function Index() {
@@ -51,10 +61,7 @@ export default function Index() {
 			<Hero
 				title="Helpful content for software engineers."
 				secondaryTitle="Better experiences for your users."
-				images={[
-					<HeroScene key="scene" className="w-full" />,
-					<HeroPeople key="people" className="w-full" />,
-				]}
+				image={<HeroImage className="w-full" />}
 				cta={
 					<Button asChild variant="link" size="lg">
 						<Link to="/blog">Read the blog</Link>
@@ -174,32 +181,7 @@ export default function Index() {
 				</div>
 			</section>
 			<ConverkitSignupForm />
-			<section className="py-20 md:pb-32 md:pt-44">
-				<div className="container-narrow">
-					<div className="grid grid-cols-5 rounded-3xl bg-accent-foreground/20 md:ml-14">
-						<LazyImage
-							width={555}
-							height={408}
-							imageUrl="/images/say-hi.png"
-							dataUri="data:image/bmp;base64,Qk32BAAAAAAAADYAAAAoAAAACAAAAAgAAAABABgAAAAAAMAAAAATCwAAEwsAAAAAAAAAAAAANTBYLjJSHjhIHD5NK0FfMj1qJTJnACJXKCw0HCcnAB4AABsCISE1Lx5LIwBNAABCQVMoPVIXOlMAQVgAT100VV1LTlFKPD05aoRYa4hTcJBNeZtYgaJsg6B1fJVscIVSi6yEjrGBlbx/nsmJpdGYpc+cnMKNkLBunsagocmdp9OasN+it+eutuWxq9WhnMCBptKup9SqrNqmtOSqu+u1uui3rdenmr+KqNayqNaurNuos+Oru+q1uue4rNWolruM"
-							className="col-span-5 h-full w-full rounded-3xl object-cover md:col-span-3 md:-ml-14 md:-mt-14"
-							alt=""
-						/>
-						<div className="col-span-5 flex h-full flex-col justify-center px-6 py-8 md:col-span-2 md:py-20 md:pl-4 md:pr-20 lg:py-24 lg:pl-6 lg:pr-24">
-							<h2 className="mb-6 text-4xl lg:text-5xl">Say hi!</h2>
-							<p className="mb-4 text-lg font-light lg:text-xl">
-								Want to reach out to say hi, ask a question or talk to me about
-								my work?
-							</p>
-							<div>
-								<Button asChild variant="link" size="lg">
-									<Link to="/contact">Get in touch</Link>
-								</Button>
-							</div>
-						</div>
-					</div>
-				</div>
-			</section>
+			<SayHiBlock />
 		</>
 	)
 }

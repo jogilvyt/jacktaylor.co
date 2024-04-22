@@ -9,13 +9,13 @@ import {
 	type MetaFunction,
 } from '@remix-run/node'
 import {
-	Link,
 	Links,
 	LiveReload,
 	Meta,
 	Outlet,
 	Scripts,
 	ScrollRestoration,
+	unstable_useViewTransitionState,
 	useFetcher,
 	useFetchers,
 	useLoaderData,
@@ -29,12 +29,14 @@ import { z } from 'zod'
 import { GeneralErrorBoundary } from './components/error-boundary.tsx'
 import { Navigation } from './components/navigation.tsx'
 import { useToast } from './components/toaster.tsx'
+import { Link } from './components/transition-links.tsx'
 import { Button } from './components/ui/button.tsx'
 import { Icon, href as iconsHref } from './components/ui/icon.tsx'
 import { Toaster } from './components/ui/sonner.tsx'
 import fontStyleSheetUrl from './styles/fonts.css'
 import proseStyleSheetUrl from './styles/prose.css'
 import tailwindStyleSheetUrl from './styles/tailwind.css'
+import viewTransitionsStyleSheetUrl from './styles/view-transitions.css'
 import { ClientHintCheck, getHints, useHints } from './utils/client-hints.tsx'
 import { csrf } from './utils/csrf.server.ts'
 import { getEnv } from './utils/env.server.ts'
@@ -67,6 +69,7 @@ export const links: LinksFunction = () => {
 		{ rel: 'icon', type: 'image/x-icon', href: '/favicons/favicon.ico' },
 		{ rel: 'stylesheet', href: tailwindStyleSheetUrl },
 		{ rel: 'stylesheet', href: proseStyleSheetUrl },
+		{ rel: 'stylesheet', href: viewTransitionsStyleSheetUrl },
 		cssBundleHref ? { rel: 'stylesheet', href: cssBundleHref } : null,
 		{ rel: 'preload', href: fontStyleSheetUrl, as: 'style' },
 		{ rel: 'stylesheet', href: fontStyleSheetUrl },
@@ -180,11 +183,20 @@ function App() {
 	const nonce = useNonce()
 	const theme = useTheme()
 	useToast(data.toast)
+	const isTransitioning = unstable_useViewTransitionState('*')
+
+	React.useEffect(() => {
+		if (isTransitioning && window.scrollY > 64) {
+			document.documentElement.classList.add('should-transition-navigation')
+		} else {
+			document.documentElement.classList.remove('should-transition-navigation')
+		}
+	}, [isTransitioning])
 
 	return (
 		<Document nonce={nonce} theme={theme} env={data.ENV}>
 			<div className="flex h-screen flex-col justify-between">
-				<header className="container mt-8 lg:mt-16">
+				<header className="navigation-view-transition container mt-8 lg:mt-16">
 					<nav>
 						<div className="flex flex-wrap items-center justify-between gap-4 sm:flex-nowrap md:gap-8">
 							<Navigation />
@@ -197,7 +209,7 @@ function App() {
 					<Outlet />
 				</main>
 
-				<footer className="bg-card pb-6 pt-6 md:pt-16">
+				<footer className="footer-view-transition bg-card pb-6 pt-6 md:pt-16">
 					<div className="container">
 						<div className="mb-4 flex flex-col items-center justify-between gap-4 md:mb-0 md:flex-row md:items-start md:gap-0">
 							<Link

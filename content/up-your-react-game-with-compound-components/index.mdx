@@ -1,0 +1,330 @@
+---
+slug: up-your-react-game-with-compound-components
+title: Up your React game with compound components
+date: 2021-04-20
+description: Build better, more robust components using this pattern.
+categories:
+  - React
+imageUrl: ./banner.jpg
+imageAlt:
+imageCredit:
+---
+
+One of the biggest challenges as a UI developer is making your code reusable
+whilst also keeping it clean and maintainable. I'm sure this pattern is
+familiar:
+
+- You get some designs for a component that you build, test, and deploy.
+- Everything is looking great. A new feature comes along that has similar (but
+  slightly different) functionality. You add a prop or some conditional logic to
+  your component to handle this new use case, which works, but things are
+  starting to get a little messy.
+- The original feature that you built the component for now has some new
+  requirements and you need to update the code. But you are worried about
+  breaking the other instances of your component and it's getting difficult to
+  write tests to cover all the logic.
+
+This (or something like it) happens all the time. So what can we do to avoid
+getting into a sticky situation?
+
+## Compund components
+
+Compound components are where a number of subcomponents work together with a
+shared state to do something useful. That was a bit of a mouthful, so let's have
+a look at an example:
+
+```jsx
+const Modal = ({ header, body, onClose }) => {
+	return (
+		<div className="Modal">
+			<div className="Modal-Header">
+				<h2>{header}</h2>
+			</div>
+			<div className="Modal-Body">
+				<p>{body}</p>
+			</div>
+			<div className="Modal-Actions">
+				<button onClick={onClose}>Close</button>
+			</div>
+		</div>
+	)
+}
+
+export default Modal
+```
+
+We have a simple modal component that takes a `header`, `body`, and an `onClose`
+prop. At this point, the modal works nicely, but it's not particularly flexible.
+If a requirement came along to add a "Confirm" button or to be able to pass JSX
+to be rendered in the body, this would start to cause problems. You could put
+some additional logic in to check what's being passed down, but as the
+complexity grows, the component will become unmaintainable:
+
+```jsx
+const Modal = ({ header, body, onClose, onConfirm, confirmButtonText }) => {
+	const renderBody = () => {
+		if (typeof body === 'string') {
+			return <p>body</p>
+		}
+
+		return body
+	}
+
+	return (
+		<div className="Modal">
+			<div className="Modal-Header">
+				<h2>{header}</h2>
+			</div>
+			<div className="Modal-Body">{renderBody()}</div>
+			<div className="Modal-Actions">
+				<button onClick={onClose}>Close</button>
+				{onConfirm && (
+					<button onClick={onConfirm}>
+						{confirmButtonText ? confirmButtonText : 'Confirm'}
+					</button>
+				)}
+			</div>
+		</div>
+	)
+}
+
+export default Modal
+```
+
+As you can see, we have had to put several checks in so that we render the
+components properly, and as the requirements grow, this will only get messier.
+
+So let's have a look at how we could do this with compound components:
+
+```jsx
+const Modal = ({ children }) => {
+	return (
+		<div className="Modal">
+			<div className="Modal-content">{children}</div>
+		</div>
+	)
+}
+
+const ModalHeader = ({ children }) => {
+	return (
+		<div className="Modal-header">
+			<h2>{children}</h2>
+		</div>
+	)
+}
+
+const ModalBody = ({ children }) => {
+	return <div className="Modal-body">{children}</div>
+}
+
+const ModalActions = ({ children }) => {
+	return <div className="Modal-actions">{children}</div>
+}
+
+// This is optional, but shows the explicit link between the components
+Modal.Header = ModalHeader
+Modal.Body = ModalBody
+Modal.Actions = ModalActions
+
+export default Modal
+```
+
+In this example, we have set each part of the modal up as its own component that
+takes children. We then assign each component as a static property to the
+`Modal` component. This part is completely optional, but I like this pattern, as
+it shows that the components are explicitly linked, and reinforces the concept
+that subcomponents, such as `Modal.Header`, should only be rendered inside a
+`Modal`.
+
+We can then use it like this:
+
+```jsx
+const App = () => {
+	const [isModalOpen, setIsModalOpen] = useState(false)
+
+	return (
+		<div className="App">
+			<h1>Try opening the modal</h1>
+			<button onClick={() => setIsModalOpen(true)}>Open the modal</button>
+
+			{isModalOpen ? (
+				<Modal>
+					<Modal.Header>This is a modal</Modal.Header>
+					<Modal.Body>
+						<p>Inside it is some information</p>
+						<p>You can render whatever JSX you want in here</p>
+					</Modal.Body>
+					<Modal.Actions>
+						<button onClick={() => setIsModalOpen(false)}>Cancel</button>
+						<button onClick={() => alert('You have accepted!')}>Accept</button>
+					</Modal.Actions>
+				</Modal>
+			) : null}
+		</div>
+	)
+}
+```
+
+We access the subcomponents using the dot notation (e.g. `Modal.Header`) and we
+can now pass down whatever we want as children with any functionality we might
+need. This means our modal component is significantly more flexible — all the
+styling and formatting is handled internally, and any other logic is just passed
+down as children — but the actual modal code is also massively simplified too.
+
+## Taking It a Step Further
+
+Part of my earlier definition of a compound component was that "a number of
+subcomponents work together with a shared state to do something useful." The
+modal example is already useful in that it abstracts all the styles into one
+place but allows us flexibility as to what we pass down to it, but the
+subcomponents (e.g. `Modal.Header` or `Modal.Actions`) don't share any state
+between them.
+
+So how could we implicitly share state between the subcomponents? Let's take a
+look at another example:
+
+```jsx
+import { createContext, useState, useContext, useMemo } from 'react'
+
+const SelectListContext = createContext()
+
+const SelectList = ({ children }) => {
+	const [isOpen, setIsOpen] = useState(false)
+
+	const contextValue = useMemo(
+		() => ({
+			isOpen,
+			setIsOpen,
+		}),
+		[isOpen],
+	)
+
+	return (
+		<SelectListContext.Provider value={contextValue}>
+			<div className="SelectList">{children}</div>
+		</SelectListContext.Provider>
+	)
+}
+
+const useSelectListContext = () => {
+	const context = useContext(SelectListContext)
+	if (!context) {
+		throw new Error(
+			`SelectList components cannot be rendered outside the SelectList component`,
+		)
+	}
+	return context
+}
+
+const SelectListToggle = ({ children }) => {
+	const { setIsOpen } = useSelectListContext()
+
+	return (
+		<div
+			onClick={() => setIsOpen(prevOpen => !prevOpen)}
+			className="SelectList-Toggle"
+		>
+			{children} ▾
+		</div>
+	)
+}
+
+const SelectListDropdown = ({ children }) => {
+	const { isOpen } = useSelectListContext()
+
+	return isOpen ? (
+		<div className="SelectList-Dropdown" style={{ position: 'absolute' }}>
+			{children}
+		</div>
+	) : null
+}
+
+const SelectListItem = ({ children, onClick }) => {
+	const { setIsOpen } = useSelectListContext()
+
+	return (
+		<div
+			className="SelectList-Item"
+			onClick={() => {
+				setIsOpen(false)
+				onClick()
+			}}
+		>
+			{children}
+		</div>
+	)
+}
+
+SelectList.Toggle = SelectListToggle
+SelectList.Dropdown = SelectListDropdown
+SelectList.Item = SelectListItem
+
+export default SelectList
+```
+
+There's a lot going on here, so let's break it down. We are building a select
+list that should work in a similar way to an HTML `select`:
+
+- First, we create a context using React's `createContext`. This is how we will
+  share the state between our subcomponents.
+- We then set up our `SelectList` component that creates a context provider and
+  passes the `isOpen` state to the provider's value. We will now have access to
+  this state (and the `setIsOpen` state setter) in all the consumers of the
+  `SelectList` provider.
+- We create a `useSelectListContext` Hook so we don't have to repeatedly call
+  `useContext(SelectListContext)`.
+- We then set up each of our subcomponents (`SelectListToggle`,
+  `SelectListDropdown`, and `SelectListItem`) that render out the options and
+  handle opening, closing, and selecting an item.
+- Finally, we assign each of the components as a static property on the
+  `SelectList` component so that we can access them using the dot notation when
+  we come to use it.
+
+This is how we would use it:
+
+```jsx
+import { useState } from 'react'
+
+import SelectList from './SelectList'
+
+const options = ['Apples', 'Pears', 'Lemons', 'Limes']
+
+function App() {
+	const [selectedValue, setSelectedValue] = useState(options[0])
+
+	return (
+		<div className="App">
+			<SelectList>
+				<SelectList.Toggle>{selectedValue}</SelectList.Toggle>
+				<SelectList.Dropdown>
+					{options.map((option, index) => (
+						<SelectList.Item
+							key={index}
+							onClick={() => setSelectedValue(option)}
+						>
+							{option}
+						</SelectList.Item>
+					))}
+				</SelectList.Dropdown>
+			</SelectList>
+		</div>
+	)
+}
+```
+
+We are mapping through our list of options and rendering them as a
+`SelectList.Item`. What's great about this is that we could pass anything down
+as a child to our list of options (e.g. icons or more comprehensive JSX). We
+have complete flexibility as to what gets rendered inside of the `SelectList`,
+but we don't have to worry about handling its "open" state.
+
+## Conclusion
+
+Compound components are an incredibly powerful way of making your code cleaner
+and more reusable. This pattern is commonly used in UI libraries (e.g.
+[Radix UI](https://www.radix-ui.com/)), as it gives developers complete
+flexibility over what they render in a component whilst abstracting away all the
+repetitive logic.
+
+Hopefully, you will find it useful in your own projects and avoid falling into
+the all-too-familiar pattern of refactoring hell when new requirements come up!

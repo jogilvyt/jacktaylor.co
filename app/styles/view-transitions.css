@@ -1,0 +1,46 @@
+@supports (view-transition-name: none) {
+	/* Cross-fade animation exit */
+	::view-transition-old(root) {
+		animation-duration: 100ms;
+	}
+
+	/* Cross-fade animation enter */
+	::view-transition-new(root) {
+		animation-duration: 400ms;
+	}
+
+	/* Blog image, title and date size and position animation */
+	::view-transition-group(blog-card-image),
+	::view-transition-group(blog-card-title),
+	::view-transition-group(blog-card-date) {
+		animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+		animation-duration: 300ms;
+	}
+
+	/* Disable footer animation */
+	::view-transition-group(footer) {
+		animation: none;
+	}
+
+	/* Set navigation animation when user has scrolled down */
+	.should-transition-navigation::view-transition-group(navigation) {
+		animation-name: fade-in;
+		animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+		animation-duration: 405ms;
+		animation-delay: 230ms;
+	}
+
+	@media (prefers-reduced-motion) {
+		::view-transition-group(*),
+		::view-transition-old(*),
+		::view-transition-new(*) {
+			animation: none;
+		}
+	}
+}
+
+@keyframes fade-in {
+	from {
+		opacity: 0;
+	}
+}

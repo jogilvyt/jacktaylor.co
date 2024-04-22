@@ -1,5 +1,12 @@
-import { Link } from '@remix-run/react'
+import { type MetaFunction } from '@remix-run/node'
+import { Link } from '#app/components/transition-links'
 import { Icon } from '#app/components/ui/icon'
+
+export const meta: MetaFunction = () => [
+	{
+		title: 'Privacy policy | Jack Taylor',
+	},
+]
 
 export default function PrivacyPolicy() {
 	return (

@@ -16,6 +16,7 @@ export type IconName =
 	| 'github-logo'
 	| 'github'
 	| 'hamburger-menu'
+	| 'info-circled'
 	| 'laptop'
 	| 'link-2'
 	| 'linkedin'

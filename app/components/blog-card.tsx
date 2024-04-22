@@ -1,7 +1,9 @@
-import { Link } from '@remix-run/react'
+import { unstable_useViewTransitionState } from '@remix-run/react'
 import clsx from 'clsx'
 import { format } from 'date-fns'
+import { cn } from '#app/utils/misc'
 import { LazyImage } from './lazy-image'
+import { Link } from './transition-links'
 
 interface BlogCardProps {
 	slug: string
@@ -26,6 +28,8 @@ export function BlogCard({
 	image,
 	className,
 }: BlogCardProps) {
+	const isTransitioning = unstable_useViewTransitionState(`/blog/${slug}`)
+
 	return (
 		<Link
 			to={`/blog/${slug}`}
@@ -34,6 +38,7 @@ export function BlogCard({
 				'rounded-3xl bg-muted transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
 				className,
 			)}
+			prefetch="intent"
 		>
 			<LazyImage
 				width={432}
@@ -41,16 +46,27 @@ export function BlogCard({
 				imageUrl={`/resources/post-image/${image.id}`}
 				dataUri={image.dataUri}
 				alt={image.alt ?? ''}
-				className="mb-6 w-full rounded-3xl"
+				className={cn('mb-6 w-full rounded-3xl', {
+					'blog-card-image-transition': isTransitioning,
+				})}
 			/>
 			<div className="mb-8 px-6">
-				<div className="mb-2 text-sm text-muted-foreground">
+				<div
+					className={cn('mb-2 text-sm text-muted-foreground', {
+						'blog-card-date-transition': isTransitioning,
+					})}
+				>
 					{format(new Date(date ?? ''), 'd MMMM yyyy')}
 				</div>
-				<h3 className="mb-2 text-3xl" id={`post-title-${id}`}>
+				<h3
+					className={cn('mb-2 text-3xl', {
+						'blog-card-title-transition': isTransitioning,
+					})}
+					id={`post-title-${id}`}
+				>
 					{title}
 				</h3>
-				<p className="text-xl font-light">{description}</p>
+				<p className="text-base">{description}</p>
 			</div>
 		</Link>
 	)

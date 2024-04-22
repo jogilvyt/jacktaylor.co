@@ -1,7 +1,7 @@
 import * as VisuallyHidden from '@radix-ui/react-visually-hidden'
-import { NavLink } from '@remix-run/react'
 import clsx from 'clsx'
 import * as React from 'react'
+import { NavLink } from './transition-links'
 import { Icon } from './ui/icon'
 import {
 	Sheet,
@@ -41,6 +41,7 @@ export function Navigation() {
 						custom: 'text-xl font-semibold md:text-3xl',
 					})
 				}
+				unstable_viewTransition
 			>
 				<div className="relative z-10">Jack Taylor</div>
 			</NavLink>
@@ -54,6 +55,7 @@ export function Navigation() {
 								custom: 'text-2xl',
 							})
 						}
+						unstable_viewTransition
 					>
 						About
 					</NavLink>
@@ -68,6 +70,7 @@ export function Navigation() {
 							})
 						}
 						prefetch="intent"
+						unstable_viewTransition
 					>
 						Blog
 					</NavLink>
@@ -81,6 +84,7 @@ export function Navigation() {
 								custom: 'text-2xl',
 							})
 						}
+						unstable_viewTransition
 					>
 						Contact
 					</NavLink>
