@@ -257,6 +257,14 @@ function App() {
 							<ul className="flex gap-x-6 text-xs">
 								<li>
 									<Link
+										to="/accessibility"
+										className="relative rounded-md ring-offset-background transition-all before:absolute before:-bottom-0 before:h-0.5 before:w-full before:origin-left before:scale-x-0 before:bg-accent-foreground before:transition-transform before:content-[''] hover:before:scale-x-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 motion-reduce:before:scale-x-100 motion-reduce:before:opacity-0 motion-reduce:before:transition-opacity motion-reduce:hover:before:opacity-100"
+									>
+										Accessibilty
+									</Link>
+								</li>
+								<li>
+									<Link
 										to="/privacy-policy"
 										className="relative rounded-md ring-offset-background transition-all before:absolute before:-bottom-0 before:h-0.5 before:w-full before:origin-left before:scale-x-0 before:bg-accent-foreground before:transition-transform before:content-[''] hover:before:scale-x-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 motion-reduce:before:scale-x-100 motion-reduce:before:opacity-0 motion-reduce:before:transition-opacity motion-reduce:hover:before:opacity-100"
 									>
