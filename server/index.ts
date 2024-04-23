@@ -130,7 +130,9 @@ app.use((_, res, next) => {
 app.use(
 	helmet({
 		referrerPolicy: { policy: 'same-origin' },
-		crossOriginEmbedderPolicy: false,
+		crossOriginEmbedderPolicy: {
+			policy: 'credentialless',
+		},
 		contentSecurityPolicy: {
 			// NOTE: Remove reportOnly when you're ready to enforce this CSP
 			reportOnly: true,
@@ -138,16 +140,16 @@ app.use(
 				'connect-src': [
 					MODE === 'development' ? 'ws:' : null,
 					process.env.SENTRY_DSN ? '*.ingest.sentry.io' : null,
-					'cdn.usefathom.com',
 					"'self'",
 				].filter(Boolean),
 				'font-src': ["'self'"],
 				'frame-src': ["'self'"],
-				'img-src': ["'self'", 'data:'],
+				'img-src': ["'self'", 'data:', 'cdn.usefathom.com'],
 				'script-src': [
 					"'strict-dynamic'",
 					"'self'",
 					"'unsafe-eval'",
+					'cdn.usefathom.com',
 					// @ts-expect-error
 					(_, res) => `'nonce-${res.locals.cspNonce}'`,
 				],
