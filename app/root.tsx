@@ -27,6 +27,7 @@ import { AuthenticityTokenProvider } from 'remix-utils/csrf/react'
 import { HoneypotProvider } from 'remix-utils/honeypot/react'
 import { z } from 'zod'
 import { GeneralErrorBoundary } from './components/error-boundary.tsx'
+import { Fathom } from './components/fathom.tsx'
 import { Navigation } from './components/navigation.tsx'
 import { useToast } from './components/toaster.tsx'
 import { Link } from './components/transition-links.tsx'
@@ -163,6 +164,7 @@ function Document({
 				<Links />
 			</head>
 			<body className="bg-background text-foreground">
+				<Fathom />
 				{children}
 				<script
 					nonce={nonce}

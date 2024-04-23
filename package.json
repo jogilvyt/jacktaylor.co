@@ -90,6 +90,7 @@
     "execa": "^8.0.1",
     "express": "^4.18.2",
     "express-rate-limit": "^7.1.5",
+    "fathom-client": "^3.6.0",
     "folder-hash": "^4.0.4",
     "framer-motion": "^11.0.3",
     "get-port": "^7.0.0",
