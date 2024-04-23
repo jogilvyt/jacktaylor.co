@@ -34,6 +34,12 @@ import { Link } from './components/transition-links.tsx'
 import { Button } from './components/ui/button.tsx'
 import { Icon, href as iconsHref } from './components/ui/icon.tsx'
 import { Toaster } from './components/ui/sonner.tsx'
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from './components/ui/tooltip.tsx'
 import fontStyleSheetUrl from './styles/fonts.css'
 import proseStyleSheetUrl from './styles/prose.css'
 import tailwindStyleSheetUrl from './styles/tailwind.css'
@@ -298,7 +304,9 @@ function AppWithProviders() {
 		<AuthenticityTokenProvider token={data.csrfToken}>
 			<HoneypotProvider {...data.honeyProps}>
 				<MotionConfig reducedMotion="user">
-					<App />
+					<TooltipProvider>
+						<App />
+					</TooltipProvider>
 				</MotionConfig>
 			</HoneypotProvider>
 		</AuthenticityTokenProvider>
@@ -399,15 +407,34 @@ function ThemeSwitch({ userPreference }: { userPreference?: Theme | null }) {
 		<fetcher.Form method="POST" {...form.props}>
 			<input type="hidden" name="theme" value={nextMode} />
 			<div className="flex gap-2">
-				<button
-					type="submit"
-					className="group flex cursor-pointer items-center justify-center rounded-full border-2 border-foreground p-2 ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 md:p-4"
-					aria-label={`Switch to ${nextMode} theme`}
-				>
-					<AnimatePresence initial={false} mode="wait">
-						{modeLabel[mode]}
-					</AnimatePresence>
-				</button>
+				<Tooltip>
+					<TooltipTrigger asChild>
+						<button
+							type="submit"
+							className="group flex cursor-pointer items-center justify-center rounded-full border-2 border-foreground p-2 ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 md:p-4"
+						>
+							<AnimatePresence initial={false} mode="wait">
+								{modeLabel[mode]}
+							</AnimatePresence>
+						</button>
+					</TooltipTrigger>
+					<TooltipContent>
+						<p className="flex items-center">
+							<Icon
+								name={
+									nextMode === 'system'
+										? 'laptop'
+										: nextMode === 'light'
+										  ? 'sun'
+										  : 'moon'
+								}
+								size="sm"
+								className="mr-2"
+							/>
+							Switch to {nextMode} theme
+						</p>
+					</TooltipContent>
+				</Tooltip>
 			</div>
 		</fetcher.Form>
 	)
