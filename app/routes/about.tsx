@@ -15,8 +15,7 @@ export const loader = ({ request }: LoaderFunctionArgs) => {
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
 	return generateSEOMetaTags({
 		title: 'About me',
-		description:
-			'Software engineer, music nerd, dog lover. Find out more about me.',
+		description: `I'm a software engineer, music nerd and dog lover from the UK. Find out more about me.`,
 		url: data?.ogUrl ?? '',
 	})
 }

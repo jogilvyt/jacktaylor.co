@@ -48,7 +48,8 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 	return generateSEOMetaTags({
 		title: 'Home',
 		ogImageTitle: 'JackTaylor.co',
-		description: 'Helpful content for software engineers.',
+		description:
+			'Helpful content for software engineers. Better experiences for your users.',
 		url: data?.ogUrl ?? '',
 	})
 }
