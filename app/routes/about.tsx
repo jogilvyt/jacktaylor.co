@@ -97,7 +97,7 @@ export default function AboutRoute() {
 					<div className="flex flex-col gap-24 lg:flex-row">
 						<div className="mx-auto max-w-[400px]">
 							<div className="mb-8 flex items-center md:mb-16">
-								<PeopleFirstIllustration className="mx-auto w-full max-w-[400px]" />
+								<PeopleFirstIllustration className="mx-auto w-full max-w-[400px] lg:h-[280px]" />
 							</div>
 							<h3 className="mb-6 text-xl md:text-4xl">People first</h3>
 							<p className="text-base font-light md:text-lg">
@@ -108,7 +108,7 @@ export default function AboutRoute() {
 						</div>
 						<div className="mx-auto max-w-[400px]">
 							<div className="mb-8 flex items-center md:mb-16">
-								<DetailIllustration className="mx-auto w-full max-w-[400px]" />
+								<DetailIllustration className="mx-auto w-full max-w-[400px] lg:h-[280px]" />
 							</div>
 							<h3 className="mb-6 text-xl md:text-4xl">Focus on the detail</h3>
 							<p className="text-base font-light md:text-lg">
@@ -118,7 +118,7 @@ export default function AboutRoute() {
 						</div>
 						<div className="mx-auto max-w-[400px]">
 							<div className="mb-8 flex items-center md:mb-16">
-								<BringJoyIllustration className="mx-auto w-full max-w-[400px]" />
+								<BringJoyIllustration className="mx-auto w-full max-w-[400px] lg:h-[280px]" />
 							</div>
 							<h3 className="mb-6 text-xl md:text-4xl">Bring joy</h3>
 							<p className="text-base font-light md:text-lg">
