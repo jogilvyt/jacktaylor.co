@@ -138,6 +138,7 @@ app.use(
 				'connect-src': [
 					MODE === 'development' ? 'ws:' : null,
 					process.env.SENTRY_DSN ? '*.ingest.sentry.io' : null,
+					'cdn.usefathom.com',
 					"'self'",
 				].filter(Boolean),
 				'font-src': ["'self'"],
