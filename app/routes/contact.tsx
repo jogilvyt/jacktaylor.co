@@ -44,8 +44,7 @@ export async function action({ request }: DataFunctionArgs) {
 				try {
 					honeypot.check(formData)
 					sendEmail({
-						// TODO: change this to hello@jacktaylor.co once it's set up
-						to: 'jack.s.o.taylor@googlemail.com',
+						to: 'hello@jacktaylor.co',
 						subject: 'New contact form submission on jacktaylor.co',
 						react: (
 							<NewSubmissionEmail
