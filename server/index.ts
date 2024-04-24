@@ -134,8 +134,6 @@ app.use(
 			policy: 'credentialless',
 		},
 		contentSecurityPolicy: {
-			// NOTE: Remove reportOnly when you're ready to enforce this CSP
-			reportOnly: true,
 			directives: {
 				'connect-src': [
 					MODE === 'development' ? 'ws:' : null,
