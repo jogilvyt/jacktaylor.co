@@ -1,0 +1,249 @@
+---
+slug: making-motion-accessible-prefers-reduced-motion
+title: "Making motion accessible: how to respect users' motion preferences"
+date: 2024-04-26
+description:
+  Motion is important, but it can be problematic for some users. Learn how to
+  respect users' motion preferences and make your site more accessible.
+categories:
+  - Accessibility
+  - CSS
+  - JavaScript
+  - React
+  - Motion
+imageUrl: ./banner.jpg
+imageAlt:
+imageCredit:
+---
+
+Motion is a really important part of good user interface design. It can help
+inform users of a narrative around the actions they're taking, draw attention to
+specific parts of a UI and guide users in their decision making, and help users
+identify relationships between elements. For me, it's often the thing that
+differentiates an average product from a great one.
+
+<Callout>
+	If you're interested in learning more about motion in user interface design,
+	Issara Willenskomer's article "[Creating Usability with Motion: The UX in
+	Motion
+	Manifesto](https://medium.com/ux-in-motion/creating-usability-with-motion-the-ux-in-motion-manifesto-a87a4584ddc)"
+	is worth a read. It goes into depth about why motion is important, and how it
+	can enhance the usability of our applications.
+</Callout>
+
+However, motion can cause significant issues for some users. People with
+vestibular disorders can experience a whole host of nasty side effects from
+certain types of animation - discomfort, dizziness, even nausea and sickness.
+And according to [vestibular.org](http://vestibular.org), as many as 35% of
+adults aged 40 years or older in the United States have experienced some form of
+vestibular dysfunction.
+
+As well as this, some people can find certain types of motion distracting or
+overwhelming, and flashing or flickering animations can trigger epileptic
+episodes. If we're aiming to increase the usability of our apps, it's important
+to consider all of these users when we build motion into our interfaces.
+
+## Web Content Accessibility Guidelines (WCAG) on motion
+
+Before getting stuck in, it's worth pointing out that there are a couple of
+success criteria relating to motion in the WCAG 2.1 guidelines. These are:
+
+1. [2.2.2 Pause, stop, hide (level A)](https://www.w3.org/WAI/WCAG21/Understanding/pause-stop-hide.html#seizures-and-physical-reactions) -
+   "For any moving, blinking or scrolling information that (1) starts
+   automatically, (2) lasts more than five seconds, and (3) is presented in
+   parallel with other content, there is a mechanism for the user to pause,
+   stop, or hide it unless the movement, blinking, or scrolling is part of an
+   activity where it is essential."
+2. [2.3.3 Animation from interactions (level AAA)](https://www.w3.org/WAI/WCAG21/Understanding/animation-from-interactions.html) -
+   "Motion animation triggered by interaction can be disabled, unless the
+   animation is essential to the functionality or the information being
+   conveyed."
+
+It's worth noting that meeting these requirements won't necessarily guarantee
+that your app is usable for people with disabilities, but it does provide a good
+indication that you're moving in the right direction.
+
+So how can we make sure that motion is accessible?
+
+## `prefers-reduced-motion`
+
+It's possible for users to set their operating system preferences to "reduce
+motion", and this preference is available to your application in the web browser
+through a media query. A simple example would look like this:
+
+```css
+.animated-element {
+	animation: slide-in 1s ease-in-out;
+	/* Other styles... */
+}
+
+@media (prefers-reduced-motion: reduce) {
+	/* Styles for when motion is reduced */
+	.animated-element {
+		animation: none;
+	}
+}
+```
+
+Sometimes it can help be a helpful mental model to think of motion as opt-in
+rather than opt-out - so we define our basic styles, and then add some
+additional styles when a user has not explicitly stated that they want to reduce
+motion:
+
+```css
+.animated-element {
+	/* Animation properties can just be omitted */
+	/* Other styles... */
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	/* Styles for when motion is enabled */
+	.animated-element {
+		animation: slide-in 1s ease-in-out;
+	}
+}
+```
+
+<Callout>
+	`prefers-reduced-motion: no-preference;` is the default setting, and lets us
+	know that a user has not explicitly turned "reduce motion" on.
+</Callout>
+
+It's also possible to detect this media query in JavaScript using
+`window.matchMedia`:
+
+```js
+const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+
+if (motionQuery.matches) {
+	// Motion is reduced
+} else {
+	// Motion is enabled
+}
+```
+
+And if you're using React, you can put this into a hook:
+
+```jsx
+import { useEffect, useState } from 'react'
+
+export function useReducedMotion() {
+	// Reduce motion by default - especially relevant for SSR where the window object
+	// is not available when the component renders on the server
+	const [matches, setMatches] = useState(true)
+
+	useEffect(() => {
+		const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+		setMatches(motionQuery.matches)
+
+		// Add an event listener to update state if motion preference changes
+		const handleMotionQueryChange = () => {
+			setMatches(motionQuery.matches)
+		}
+
+		motionQuery.addEventListener('change', handleMotionQueryChange)
+
+		// Clean up the event listener
+		return () => {
+			motionQuery.removeEventListener('change', handleMotionQueryChange)
+		}
+	}, [])
+
+	return matches
+}
+```
+
+<Callout>
+	JavaScript animation libraries will often expose a hook you can use to detect
+	whether a user has `prefers-reduced-motion` enabled. For example,
+	`framer-motion` exposes the [`useReducedMotion`
+	hook](https://www.framer.com/motion/use-reduced-motion/), which you can use in
+	the same way as the example above.
+</Callout>
+
+## Testing `prefers-reduced-motion`
+
+Now that we can detect whether a user has enabled `prefers-reduced-motion`, it's
+a good idea to test what happens when we switch it on ourselves.
+
+You can enable the setting at the operating system level - for example, on MacOS
+Sonoma, open System Settings, go to Accessibility, then Display, and toggle on
+"Reduce motion".
+
+It's also possible to emulate the media query in your browser. Google Chrome
+allows you to toggle the `prefers-reduced-motion: reduce;` media feature on and
+off through the developer tools - check out the instructions in the
+"[Emulate CSS media feature `prefers-reduced-motion`](https://developer.chrome.com/docs/devtools/rendering/emulate-css#emulate_css_media_feature_prefers-reduced-motion)"
+section of the documentation.
+
+<Callout>
+	It's quite interesting to turn on `prefers-reduced-motion` and browse some
+	sites you're familiar with, to see how they handle it. It can provide you with
+	some inspiration for how to preserve the usability benefits of motion in an
+	accessible way.
+</Callout>
+
+## Problematic types of motion
+
+We know that motion can cause problems for some users, but it's important to
+note that this only applies to certain types of motion.
+
+As a general rule, it's best to avoid flickering or blinking animations
+(particularly relevant to the WCAG Success Criterion 2.2.2 "Pause, Stop, Hide").
+These can be distracting, and in some cases can trigger epileptic episodes. I
+would also say (subjectively) that these are pretty annoying for _all_ users -
+so I'd recommend avoiding them even when users don't explicitly have reduced
+motion turned on.
+
+Scaling, zooming, spinning or positional animations can be particularly
+problematic for users with vestibular disorders. These can trigger feelings of
+motion sickness - and if you've ever been seasick, you'll know just how
+unpleasant this can be.
+
+However, some types of motion are less likely to cause problems. Colour
+transitions and opacity fades tend not to be vestibular triggers, so something
+like transitioning the background colour of an element on hover is generally
+safe. Furthermore, these transitions are often essential for conveying meaning
+in user interactions - for example, when changing a button from _enabled_ to
+_disabled_.
+
+## Keep motion where it's essential
+
+Where motion plays an important role in enhancing the usability of an interface,
+you should aim to keep it present, but in an accessible way. This means
+replacing problematic motion with transitions that won't cause unintended
+consequences.
+
+As an example, let's imagine we have a drawer component which slides in from the
+side of the screen when it opens. This transition is important, as it shows the
+user that the context of the screen they're looking at has changed. However, a
+large element changing position like this can be a vestibular trigger. So if a
+user has prefers-reduced-motion set, you could replace this with an opacity fade
+between the closed and open states. This would preserve the usability benefits
+of applying the transition, but in a less problematic way.
+
+<Callout>
+	If you're on a Mac, try turning on reduced motion and swiping between
+	desktops. You'll see something similar to this, where the slide animation is
+	replaced with an opacity fade
+</Callout>
+
+If you're ever unsure, it's always best to test your transitions with real users
+who browse your application with `prefers-reduced-motion` set, if possible. This
+is the only way to truly know if your app is actually usable, rather than just
+conforming to WCAG standards - and is best practice for user interface
+development as a whole.
+
+## Conclusion
+
+Building really good user interfaces is a pretty daunting task. There's already
+so much to consider in order to get an app working across every browser, screen
+size and device, let alone thinking about screenreaders, different input
+modalities, zoom levels... Motion is a small part of all of this, and it's easy
+to overlook altogether, or sprinkle about randomly as an afterthought.
+
+But getting it right really does elevate an experience from being just average,
+to being something special. And making sure it works for everyone is an
+essential part of that. We should allow users to interact with our application
+in the way that suits them best, and still provide a great experience - and
+accessible motion can play a big part in that.
