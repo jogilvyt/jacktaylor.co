@@ -126,106 +126,108 @@ export default function ContactRoute() {
 				condensed
 			/>
 			<section className="bg-muted py-14 md:py-32">
-				<div className="mx-auto max-w-[420px]">
-					<p className="mb-6 text-center text-2xl">
-						If you want to get in touch, fill out the form and I'll get back to
-						you.
-						<br />
-						Or you can find me here...
-					</p>
-					<div className="mb-6 flex justify-center gap-x-4 md:mb-12">
-						<Button asChild variant="outline" size="icon">
-							<a
-								href="https://twitter.com/jogilvyt"
-								target="_blank"
-								rel="noopener noreferrer"
-								aria-label="Twitter"
-							>
-								<Icon name="twitter" size="lg" />
-							</a>
-						</Button>
-						<Button asChild variant="outline" size="icon">
-							<a
-								href="https://www.linkedin.com/in/jack-taylor-b470a7130/"
-								target="_blank"
-								rel="noopener noreferrer"
-								aria-label="LinkedIn"
-							>
-								<Icon name="linkedin" size="lg" />
-							</a>
-						</Button>
-						<Button asChild variant="outline" size="icon">
-							<a
-								href="https://github.com/jogilvyt"
-								target="_blank"
-								rel="noopener noreferrer"
-								aria-label="GitHub"
-							>
-								<Icon name="github" size="lg" />
-							</a>
-						</Button>
-						<Button asChild variant="outline" size="icon">
-							<a
-								// eslint-disable-next-line remix-react-routes/use-link-for-routes
-								href="mailto:hello@jacktaylor.co"
-								target="_blank"
-								rel="noopener noreferrer"
-								aria-label="Email"
-							>
-								<Icon name="envelope-closed" size="lg" />
-							</a>
-						</Button>
-					</div>
-					{!lastSubmission ? (
-						<fetcher.Form
-							className="flex flex-col"
-							method="POST"
-							{...form.props}
-						>
-							<HoneypotInputs />
-							<FormControl className="w-full flex-grow md:w-auto">
-								<Label htmlFor={fields.name.id}>Name</Label>
-								<Input {...conform.input(fields.name, { type: 'text' })} />
-								{fields.name.error ? (
-									<FormControl.ValidationMessage>
-										{fields.name.error}
-									</FormControl.ValidationMessage>
-								) : null}
-							</FormControl>
-							<FormControl className="flex-grow">
-								<Label htmlFor={fields.email.id}>Email address</Label>
-								<Input {...conform.input(fields.email, { type: 'email' })} />
-								{fields.email.error ? (
-									<FormControl.ValidationMessage>
-										{fields.email.error}
-									</FormControl.ValidationMessage>
-								) : null}
-							</FormControl>
-							<FormControl className="flex-grow">
-								<Label htmlFor={fields.message.id}>Message</Label>
-								<Textarea {...conform.textarea(fields.message)} />
-								{fields.message.error ? (
-									<FormControl.ValidationMessage>
-										{fields.message.error}
-									</FormControl.ValidationMessage>
-								) : null}
-							</FormControl>
-							<Button
-								type="submit"
-								variant="default"
-								disabled={fetcher.state !== 'idle'}
-							>
-								Submit
+				<div className="container">
+					<div className="mx-auto max-w-[420px]">
+						<p className="mb-6 text-center text-2xl">
+							If you want to get in touch, fill out the form and I'll get back
+							to you.
+							<br />
+							Or you can find me here...
+						</p>
+						<div className="mb-6 flex justify-center gap-x-4 md:mb-12">
+							<Button asChild variant="outline" size="icon">
+								<a
+									href="https://twitter.com/jogilvyt"
+									target="_blank"
+									rel="noopener noreferrer"
+									aria-label="Twitter"
+								>
+									<Icon name="twitter" size="lg" />
+								</a>
 							</Button>
-						</fetcher.Form>
-					) : (
-						<div className="mb-8 flex flex-col gap-y-2 rounded-md border-2 border-accent-foreground bg-accent-foreground/20 p-6 text-center text-foreground">
-							<p className="text-lg">Thanks for reaching out! 🎉</p>
-							<p className="font-light">
-								I'll be in touch soon with a response.
-							</p>
+							<Button asChild variant="outline" size="icon">
+								<a
+									href="https://www.linkedin.com/in/jack-taylor-b470a7130/"
+									target="_blank"
+									rel="noopener noreferrer"
+									aria-label="LinkedIn"
+								>
+									<Icon name="linkedin" size="lg" />
+								</a>
+							</Button>
+							<Button asChild variant="outline" size="icon">
+								<a
+									href="https://github.com/jogilvyt"
+									target="_blank"
+									rel="noopener noreferrer"
+									aria-label="GitHub"
+								>
+									<Icon name="github" size="lg" />
+								</a>
+							</Button>
+							<Button asChild variant="outline" size="icon">
+								<a
+									// eslint-disable-next-line remix-react-routes/use-link-for-routes
+									href="mailto:hello@jacktaylor.co"
+									target="_blank"
+									rel="noopener noreferrer"
+									aria-label="Email"
+								>
+									<Icon name="envelope-closed" size="lg" />
+								</a>
+							</Button>
 						</div>
-					)}
+						{!lastSubmission ? (
+							<fetcher.Form
+								className="flex flex-col"
+								method="POST"
+								{...form.props}
+							>
+								<HoneypotInputs />
+								<FormControl className="w-full flex-grow md:w-auto">
+									<Label htmlFor={fields.name.id}>Name</Label>
+									<Input {...conform.input(fields.name, { type: 'text' })} />
+									{fields.name.error ? (
+										<FormControl.ValidationMessage>
+											{fields.name.error}
+										</FormControl.ValidationMessage>
+									) : null}
+								</FormControl>
+								<FormControl className="flex-grow">
+									<Label htmlFor={fields.email.id}>Email address</Label>
+									<Input {...conform.input(fields.email, { type: 'email' })} />
+									{fields.email.error ? (
+										<FormControl.ValidationMessage>
+											{fields.email.error}
+										</FormControl.ValidationMessage>
+									) : null}
+								</FormControl>
+								<FormControl className="flex-grow">
+									<Label htmlFor={fields.message.id}>Message</Label>
+									<Textarea {...conform.textarea(fields.message)} />
+									{fields.message.error ? (
+										<FormControl.ValidationMessage>
+											{fields.message.error}
+										</FormControl.ValidationMessage>
+									) : null}
+								</FormControl>
+								<Button
+									type="submit"
+									variant="default"
+									disabled={fetcher.state !== 'idle'}
+								>
+									Submit
+								</Button>
+							</fetcher.Form>
+						) : (
+							<div className="mb-8 flex flex-col gap-y-2 rounded-md border-2 border-accent-foreground bg-accent-foreground/20 p-6 text-center text-foreground">
+								<p className="text-lg">Thanks for reaching out! 🎉</p>
+								<p className="font-light">
+									I'll be in touch soon with a response.
+								</p>
+							</div>
+						)}
+					</div>
 				</div>
 			</section>
 		</>
