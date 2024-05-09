@@ -78,13 +78,13 @@ export default function AboutRoute() {
 						/>
 						<h3>Today</h3>
 						<p>
-							I'm currently a Software Engineer and Tech Lead at Pleo, in the
-							Core Experience team. We work with all the feature teams to ensure
-							we build a consistently great user experience across the product,
-							focusing on getting the details right. Pleo is a great place to
-							work, and it's beena a great experience callaborating across a big
-							engineering department, driving complex multi-dependency projects
-							forward.
+							I'm currently a Staff Engineer and Tech Lead at Pleo, in the Core
+							Experience team. We work with all the feature teams to ensure we
+							build a consistently great user experience across the product,
+							whilst focusing on getting the details right. It's been a a great
+							experience working across a big engineering department, and I've
+							had the opportunity to work on some really complex and satisfying
+							projects.
 						</p>
 					</div>
 				</div>
