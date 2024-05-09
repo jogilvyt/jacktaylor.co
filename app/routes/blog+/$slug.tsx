@@ -15,6 +15,7 @@ import { format } from 'date-fns'
 import * as React from 'react'
 import { BlogCard } from '#app/components/blog-card'
 import { Callout } from '#app/components/callout'
+import { GifPlayer } from '#app/components/gif-player'
 import { LazyImage } from '#app/components/lazy-image'
 import { ExternalLink } from '#app/components/text-link'
 import { Link } from '#app/components/transition-links'
@@ -74,6 +75,11 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 				},
 			},
 		},
+		orderBy: {
+			postMeta: {
+				date: 'desc',
+			},
+		},
 		where: {
 			id: {
 				not: post.id,
@@ -109,6 +115,11 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 						id: true,
 						dataUri: true,
 					},
+				},
+			},
+			orderBy: {
+				postMeta: {
+					date: 'desc',
 				},
 			},
 			where: {
@@ -221,6 +232,7 @@ export default function BlogPostRoute() {
 						<Component
 							components={{
 								Callout,
+								GifPlayer,
 							}}
 						/>
 					</div>
