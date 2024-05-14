@@ -1,0 +1,238 @@
+---
+slug: build-better-react-components-with-these-typescript-tricks
+title: Build better React components with these TypeScript tricks
+date: 2024-05-13
+description:
+  A component with a good API surface is explicit about how it should be used.
+  TypeScript has some great features to help you achieve this.
+categories:
+  - React
+  - TypeScript
+imageUrl: ./banner.jpg
+imageAlt:
+imageCredit:
+---
+
+I often run into cases where I want to be super explicit about what props should
+be provided to a React component. Sometimes this is because the component needs
+certain props across different types of data, or because I want to be explicit
+about what _combination_ of props should be provided. Luckily, TypeScript has
+some great features that allow us to cater for these situations whilst also
+providing a nice robust API surface for our component.
+
+## Discriminated unions
+
+A discriminated union (sometimes also called a 'tagged union') allows you to
+define multiple different types, with one property shared across them that
+defines which type is in use.
+
+That's pretty wordy, so let's have a look at an example. Say we have a list of
+books and films, and we want to use a React component to render a label for each
+item in this list. Both books and films have a title, but books have an author,
+and films have a director. You could do it like this:
+
+```tsx
+interface MediaLabelProps {
+	title: string
+	author?: string
+	director?: string
+}
+
+function MediaLabel(props: MediaLabelProps) {
+	const isFilm = props.director && !props.author
+	const isBook = props.author && !props.director
+
+	if (isFilm) {
+		return (
+			<>
+				{props.title} - {props.director}
+			</>
+		)
+	}
+
+	if (isBook) {
+		return (
+			<>
+				{props.title} - {props.author}
+			</>
+		)
+	}
+
+	return null
+}
+```
+
+However, this allows you to get into some potentially weird states:
+
+```tsx
+  // TypeScript is happy, but this would render null
+  <MediaLabel
+    title="The Lord of the Rings: The Fellowship of the Ring"
+    author="J. R. R. Tolkein"
+    director="Peter Jackson"
+  />
+
+  // TypeScript is also fine with this, but we really
+  // want to make sure either an author or a director is passed
+  <MediaLabel title="The Lord of the Rings: The Fellowship of the Ring" />
+```
+
+We can be more explicit using a discriminated union:
+
+```tsx
+interface MediaItem {
+	title: string
+}
+
+interface Film extends MediaItem {
+	type: 'film'
+	director: string
+}
+
+interface Book extends MediaItem {
+	type: 'book'
+	author: string
+}
+
+type MediaLabelProps = Book | Film
+
+function MediaLabel(props: MediaLabelProps) {
+	if (props.type === 'book') {
+		return (
+			<>
+				{props.title} - {props.author}
+			</>
+		)
+	}
+
+	if (props.type === 'film') {
+		return (
+			<>
+				{props.title} - {props.director}
+			</>
+		)
+	}
+
+	return null
+}
+```
+
+Both `Film` and `Book` share the `title` property, so they both extend the
+`MediaItem` interface. But they also have a `type` property that is unique to
+each type. This is the 'discriminant' property, and inside the `MediaLabel`
+component we can use it to tell TypeScript exactly which type we're dealing
+with.
+
+<Callout>
+	Note that TypeScript won't let you destructure the `props` object in the
+	function parameters if you're using a discriminated union. If you think about
+	it, it makes sense - you can't know what properties are available until you've
+	checked which `type` is being passed. So you'll need to access the properties
+	directly from the `props` object, like in the example above.
+</Callout>
+
+The true power of this becomes apparent when you use the component:
+
+```tsx
+// TypeScript will complain if you try to pass both an author and a director
+<MediaLabel
+  title="The Lord of the Rings: The Fellowship of the Ring"
+  author="J. R. R. Tolkein"
+  director="Peter Jackson"
+/>
+
+// TypeScript will also complain if you don't pass an author or a director at all
+<MediaLabel title="The Lord of the Rings: The Fellowship of the Ring" />
+```
+
+This way we can be super explicit about what props our `MediaLabel` component
+expects. Nice! 🎉
+
+## "Exclusive or" (XOR) Props
+
+Another common use case I come across is when a component should to take one OR
+another prop, but not both. We can do this using an "exclusive or" type.
+
+As an example, let's say we have a dialog component and we want to ensure that
+either an `aria-label` or an `aria-labelledby` is passed as a prop. You could do
+this:
+
+```tsx
+interface DialogProps {
+	children: React.ReactNode
+	'aria-label'?: string
+	'aria-labelledby'?: string
+}
+
+function Dialog({ children, ...props }: DialogProps) {
+	return (
+		<div role="dialog" {...props}>
+			{props.children}
+		</div>
+	)
+}
+```
+
+However, this would mean you could pass both an `aria-label` and an
+`aria-labelledby` - or neither:
+
+```tsx
+// TypeScript is happy, but this would render with both an `aria-label` and an `aria-labelledby`
+<Dialog aria-label="This is a dialog" aria-labelledby="dialog-title">Hello, world!</Dialog>
+
+// TypeScript is also fine with this, but really we want to ensure that
+// either an `aria-label` or an `aria-labelledby` is passed
+<Dialog>Hello, world!</Dialog>
+```
+
+Instead, you can enforce that either an `aria-label` OR an `aria-labelledby` is
+passed by doing this:
+
+```tsx
+interface DialogBaseProps {
+	children: React.ReactNode
+}
+
+interface DialogWithAriaLabel extends DialogBaseProps {
+	'aria-label': string
+	'aria-labelledby'?: never
+}
+
+interface DialogWithAriaLabelledBy extends DialogBaseProps {
+	'aria-label'?: never
+	'aria-labelledby': string
+}
+
+type DialogProps = DialogWithAriaLabel | DialogWithAriaLabelledBy
+
+function Dialog({ children, ...props }: DialogProps) {
+	return (
+		<div role="dialog" {...props}>
+			{children}
+		</div>
+	)
+}
+```
+
+Now when we render the `Dialog` component, TypeScript will complain if we try to
+pass both an `aria-label` and an `aria-labelledby`, or if we don't pass either:
+
+```tsx
+// TypeScript will complain if you try to pass both an `aria-label` and an `aria-labelledby`
+<Dialog aria-label="This is a dialog" aria-labelledby="dialog-title">Hello, world!</Dialog>
+
+// TypeScript will also complain if you don't pass an `aria-label` or an `aria-labelledby` at all
+<Dialog>Hello, world!</Dialog>
+```
+
+Again, this allows you to be super explicit about how your component is meant to
+be used ✅
+
+## Conclusion
+
+A component with a good API surface should show other developers how to use it
+without them needing to check how that component was implemented under the hood.
+Using these TypeScript features allows you to make your code self-documenting by
+being explicit about what props your components are expecting. It's a win-win -
+for the experience of the other developers using your component, and for the
+robustness of the component itself.
