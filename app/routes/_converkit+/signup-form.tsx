@@ -3,6 +3,7 @@ import { getFieldsetConstraint, parse } from '@conform-to/zod'
 import { type DataFunctionArgs, json } from '@remix-run/node'
 import { useFetcher } from '@remix-run/react'
 import { trackEvent } from 'fathom-client'
+import { useEffect } from 'react'
 import { HoneypotInputs } from 'remix-utils/honeypot/react'
 import { SpamError } from 'remix-utils/honeypot/server'
 import { z } from 'zod'
@@ -97,10 +98,13 @@ export function ConverkitSignupForm({
 			return parse(formData, { schema: EmailSignupFormSchema })
 		},
 		shouldValidate: 'onBlur',
-		onSubmit: () => {
-			trackEvent('Newsletter signup')
-		},
 	})
+
+	useEffect(() => {
+		if (lastSubmission?.value) {
+			trackEvent('Newsletter signup')
+		}
+	}, [lastSubmission])
 
 	const content = (
 		<div className="grid grid-cols-3 gap-x-12">

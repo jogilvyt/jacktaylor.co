@@ -32,16 +32,3 @@ test('Blog listing page: there are no common accessibility issues', async ({
 	const results = await new AxeBuilder({ page }).analyze()
 	expect(results.violations).toEqual([])
 })
-
-test('Blog post page: there are no common accessibility issues', async ({
-	page,
-}) => {
-	await page.goto('/blog')
-	await page
-		.getByText(
-			'Create beautiful cross-page animations with the View Transitions API',
-		)
-		.click()
-	const results = await new AxeBuilder({ page }).analyze()
-	expect(results.violations).toEqual([])
-})

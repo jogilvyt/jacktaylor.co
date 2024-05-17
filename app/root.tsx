@@ -203,96 +203,94 @@ function App() {
 
 	return (
 		<Document nonce={nonce} theme={theme} env={data.ENV}>
-			<div className="flex h-screen flex-col justify-between">
-				<header className="navigation-view-transition container mt-8 lg:mt-16">
-					<nav>
-						<div className="flex flex-wrap items-center justify-between gap-4 sm:flex-nowrap md:gap-8">
-							<Navigation />
-							<ThemeSwitch userPreference={data.requestInfo.userPrefs.theme} />
-						</div>
-					</nav>
-				</header>
+			<header className="navigation-view-transition container mt-8 lg:mt-16">
+				<nav>
+					<div className="flex flex-wrap items-center justify-between gap-4 sm:flex-nowrap md:gap-8">
+						<Navigation />
+						<ThemeSwitch userPreference={data.requestInfo.userPrefs.theme} />
+					</div>
+				</nav>
+			</header>
 
-				<main className="flex-1" id="main-content">
-					<Outlet />
-				</main>
+			<main className="flex-1" id="main-content">
+				<Outlet />
+			</main>
 
-				<footer className="footer-view-transition bg-card pb-6 pt-6 md:pt-16">
-					<div className="container">
-						<div className="mb-4 flex flex-col items-center justify-between gap-4 md:mb-0 md:flex-row md:items-start md:gap-0">
-							<Link
-								to="/"
-								className="relative block rounded-md text-xl font-semibold ring-offset-background transition-all before:absolute before:-bottom-0 before:h-1 before:w-full before:origin-left before:scale-x-0 before:bg-accent-foreground before:transition-transform before:content-[''] hover:before:scale-x-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 motion-reduce:before:scale-x-100 motion-reduce:before:opacity-0 motion-reduce:before:transition-opacity motion-reduce:hover:before:opacity-100 md:mb-24 md:text-3xl"
-							>
-								Jack Taylor
-							</Link>
-							<div className="flex gap-x-4">
-								<Button asChild variant="outline" size="icon">
-									<a
-										href="https://twitter.com/jogilvyt"
-										target="_blank"
-										rel="noopener noreferrer"
-										aria-label="Twitter"
-									>
-										<Icon name="twitter" size="lg" />
-									</a>
-								</Button>
-								<Button asChild variant="outline" size="icon">
-									<a
-										href="https://www.linkedin.com/in/jack-taylor-b470a7130/"
-										target="_blank"
-										rel="noopener noreferrer"
-										aria-label="LinkedIn"
-									>
-										<Icon name="linkedin" size="lg" />
-									</a>
-								</Button>
-								<Button asChild variant="outline" size="icon">
-									<a
-										href="https://github.com/jogilvyt"
-										target="_blank"
-										rel="noopener noreferrer"
-										aria-label="GitHub"
-									>
-										<Icon name="github" size="lg" />
-									</a>
-								</Button>
-							</div>
-						</div>
-						<div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
-							<ul className="flex gap-x-6 text-xs">
-								<li>
-									<Link
-										to="/accessibility"
-										className="relative rounded-md ring-offset-background transition-all before:absolute before:-bottom-0 before:h-0.5 before:w-full before:origin-left before:scale-x-0 before:bg-accent-foreground before:transition-transform before:content-[''] hover:before:scale-x-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 motion-reduce:before:scale-x-100 motion-reduce:before:opacity-0 motion-reduce:before:transition-opacity motion-reduce:hover:before:opacity-100"
-									>
-										Accessibilty
-									</Link>
-								</li>
-								<li>
-									<Link
-										to="/privacy-policy"
-										className="relative rounded-md ring-offset-background transition-all before:absolute before:-bottom-0 before:h-0.5 before:w-full before:origin-left before:scale-x-0 before:bg-accent-foreground before:transition-transform before:content-[''] hover:before:scale-x-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 motion-reduce:before:scale-x-100 motion-reduce:before:opacity-0 motion-reduce:before:transition-opacity motion-reduce:hover:before:opacity-100"
-									>
-										Privacy policy
-									</Link>
-								</li>
-								<li>
-									<Link
-										to="/terms-of-use"
-										className="relative rounded-md ring-offset-background transition-all before:absolute before:-bottom-0 before:h-0.5 before:w-full before:origin-left before:scale-x-0 before:bg-accent-foreground before:transition-transform before:content-[''] hover:before:scale-x-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 motion-reduce:before:scale-x-100 motion-reduce:before:opacity-0 motion-reduce:before:transition-opacity motion-reduce:hover:before:opacity-100"
-									>
-										Terms of use
-									</Link>
-								</li>
-							</ul>
-							<div className="text-center text-xs md:text-right">
-								&copy; Jack Taylor {new Date().getFullYear()}
-							</div>
+			<footer className="footer-view-transition bg-card pb-6 pt-6 md:pt-16">
+				<div className="container">
+					<div className="mb-4 flex flex-col items-center justify-between gap-4 md:mb-0 md:flex-row md:items-start md:gap-0">
+						<Link
+							to="/"
+							className="relative block rounded-md text-xl font-semibold ring-offset-background transition-all before:absolute before:-bottom-0 before:h-1 before:w-full before:origin-left before:scale-x-0 before:bg-accent-foreground before:transition-transform before:content-[''] hover:before:scale-x-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 motion-reduce:before:scale-x-100 motion-reduce:before:opacity-0 motion-reduce:before:transition-opacity motion-reduce:hover:before:opacity-100 md:mb-24 md:text-3xl"
+						>
+							Jack Taylor
+						</Link>
+						<div className="flex gap-x-4">
+							<Button asChild variant="outline" size="icon">
+								<a
+									href="https://twitter.com/jogilvyt"
+									target="_blank"
+									rel="noopener noreferrer"
+									aria-label="Twitter"
+								>
+									<Icon name="twitter" size="lg" />
+								</a>
+							</Button>
+							<Button asChild variant="outline" size="icon">
+								<a
+									href="https://www.linkedin.com/in/jack-taylor-b470a7130/"
+									target="_blank"
+									rel="noopener noreferrer"
+									aria-label="LinkedIn"
+								>
+									<Icon name="linkedin" size="lg" />
+								</a>
+							</Button>
+							<Button asChild variant="outline" size="icon">
+								<a
+									href="https://github.com/jogilvyt"
+									target="_blank"
+									rel="noopener noreferrer"
+									aria-label="GitHub"
+								>
+									<Icon name="github" size="lg" />
+								</a>
+							</Button>
 						</div>
 					</div>
-				</footer>
-			</div>
+					<div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
+						<ul className="flex gap-x-6 text-xs">
+							<li>
+								<Link
+									to="/accessibility"
+									className="relative rounded-md ring-offset-background transition-all before:absolute before:-bottom-0 before:h-0.5 before:w-full before:origin-left before:scale-x-0 before:bg-accent-foreground before:transition-transform before:content-[''] hover:before:scale-x-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 motion-reduce:before:scale-x-100 motion-reduce:before:opacity-0 motion-reduce:before:transition-opacity motion-reduce:hover:before:opacity-100"
+								>
+									Accessibilty
+								</Link>
+							</li>
+							<li>
+								<Link
+									to="/privacy-policy"
+									className="relative rounded-md ring-offset-background transition-all before:absolute before:-bottom-0 before:h-0.5 before:w-full before:origin-left before:scale-x-0 before:bg-accent-foreground before:transition-transform before:content-[''] hover:before:scale-x-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 motion-reduce:before:scale-x-100 motion-reduce:before:opacity-0 motion-reduce:before:transition-opacity motion-reduce:hover:before:opacity-100"
+								>
+									Privacy policy
+								</Link>
+							</li>
+							<li>
+								<Link
+									to="/terms-of-use"
+									className="relative rounded-md ring-offset-background transition-all before:absolute before:-bottom-0 before:h-0.5 before:w-full before:origin-left before:scale-x-0 before:bg-accent-foreground before:transition-transform before:content-[''] hover:before:scale-x-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 motion-reduce:before:scale-x-100 motion-reduce:before:opacity-0 motion-reduce:before:transition-opacity motion-reduce:hover:before:opacity-100"
+								>
+									Terms of use
+								</Link>
+							</li>
+						</ul>
+						<div className="text-center text-xs md:text-right">
+							&copy; Jack Taylor {new Date().getFullYear()}
+						</div>
+					</div>
+				</div>
+			</footer>
 			<Toaster closeButton position="top-center" theme={theme} />
 		</Document>
 	)
