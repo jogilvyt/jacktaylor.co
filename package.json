@@ -37,6 +37,7 @@
     "/server-build"
   ],
   "dependencies": {
+    "@axe-core/playwright": "^4.9.0",
     "@conform-to/react": "^0.9.1",
     "@conform-to/zod": "^0.9.1",
     "@epic-web/cachified": "^4.0.0",
