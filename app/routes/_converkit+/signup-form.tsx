@@ -102,7 +102,9 @@ export function ConverkitSignupForm({
 
 	useEffect(() => {
 		if (lastSubmission?.value) {
-			trackEvent('Newsletter signup')
+			trackEvent('Newsletter signup', {
+				_site_id: 'ERTYDPDJ',
+			})
 		}
 	}, [lastSubmission])
 
