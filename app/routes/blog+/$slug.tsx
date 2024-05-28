@@ -16,6 +16,7 @@ import * as React from 'react'
 import { BlogCard } from '#app/components/blog-card'
 import { Callout } from '#app/components/callout'
 import { GifPlayer } from '#app/components/gif-player'
+import { InteractiveComponent } from '#app/components/interactive-component'
 import { LazyImage } from '#app/components/lazy-image'
 import { ExternalLink } from '#app/components/text-link'
 import { Link } from '#app/components/transition-links'
@@ -233,6 +234,7 @@ export default function BlogPostRoute() {
 							components={{
 								Callout,
 								GifPlayer,
+								InteractiveComponent,
 							}}
 						/>
 					</div>

@@ -204,7 +204,7 @@ function App() {
 	return (
 		<Document nonce={nonce} theme={theme} env={data.ENV}>
 			<header className="navigation-view-transition container mt-8 lg:mt-16">
-				<nav>
+				<nav aria-label="Site">
 					<div className="flex flex-wrap items-center justify-between gap-4 sm:flex-nowrap md:gap-8">
 						<Navigation />
 						<ThemeSwitch userPreference={data.requestInfo.userPrefs.theme} />
@@ -258,7 +258,10 @@ function App() {
 							</Button>
 						</div>
 					</div>
-					<div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
+					<nav
+						className="flex flex-col items-center gap-4 sm:flex-row sm:justify-between"
+						aria-label="Useful links"
+					>
 						<ul className="flex gap-x-6 text-xs">
 							<li>
 								<Link
@@ -288,7 +291,7 @@ function App() {
 						<div className="text-center text-xs md:text-right">
 							&copy; Jack Taylor {new Date().getFullYear()}
 						</div>
-					</div>
+					</nav>
 				</div>
 			</footer>
 			<Toaster closeButton position="top-center" theme={theme} />
