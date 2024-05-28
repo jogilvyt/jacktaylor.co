@@ -161,14 +161,16 @@ The `search` landmark region is used to identify a section of the page which
 provides some sort of search functionality. This is usually a search form or
 search input field.
 
-There is no HTML element which will automatically be assigned the `search` role,
-so it's normal to add the role to a form element or input field.
+The `search` HTML element exposes the `search` role by default, though this
+doesn't have full cross-browser support yet, so it's a good idea to still assign
+the `search` role manually
+([special thanks to Sara Soueidan for pointing this out!](https://x.com/SaraSoueidan/status/1795481651885343077)).
 
 ```html
-<form role="search" aria-labelledby="search-name">
+<search role="search" aria-labelledby="search-name">
 	<p id="search-name">Search this site</p>
-	<!-- search elements go here -->
-</form>
+	<!-- search form elements go here -->
+</search>
 ```
 
 ### Generic regions
