@@ -1,0 +1,217 @@
+---
+slug: interactive-guide-to-landmark-regions
+title: An Interactive Guide to Landmark Regions
+date: 2024-05-20
+description:
+  Getting a quick overview of a page's content is easy for sighted users, but
+  for screenreader users, it's a different story. Landmark regions provide
+  structure for a page, making it easier for screenreader users to find the
+  content they're looking for.
+categories:
+  - Accessibility
+  - Interactive
+imageUrl: ./banner.jpg
+imageAlt:
+imageCredit:
+---
+
+As a sighted user browsing the web, it's usually pretty easy to scan a page and
+quickly get an idea of where the content you're looking for is. But for users
+who rely on a screenreader, this isn't possible. A screenreader user needs to
+navigate through the whole page sequentially until they find the relevant
+content, and this can be a slow and frustrating process.
+
+Thankfully, it's possible to make this process easier by using landmark regions.
+These are roles which are exposed to screenreaders to help them understand the
+structure of a page, telling them where each section of content is and what it
+contains.
+
+## Interactive tool
+
+I've created an interactive tool to help sighted users visualise how landmark
+regions work. The idea is to highlight how important visual hierarchy and layout
+are for helping users navigate around a page.
+
+Take a look at the simulated page below. Without any visual hierarchy, sighted
+users will see a jumble of elements, with no clear idea of what content each
+section contains. But as you toggle the landmark regions on, you'll see how the
+page layout becomes more structured, and you'll instinctively know where to look
+for different types of content, as well as what you'd expect to find there.
+
+Landmark regions help to provide a similar structure for screenreader users,
+making it easier for them to navigate the page and find the content they're
+looking for. With the appropriate landmark regions added to a page, a
+screenreader will explicitly announce each section of the page, so a user can
+quickly jump to the content they're interested in.
+
+---
+
+<InteractiveComponent component="VisualisingLandmarkRegions" />
+
+---
+
+## Core landmark regions
+
+There are a few core landmark regions which you should aim to always include on
+your page. These are all exposed by default by the relevant semantic HTML
+element, so using the right element will get you most of the way there.
+
+### Banner
+
+The `banner` landmark region normally appears at the top of a page and contains
+global, site-oriented content, such as a company logo, navigation and search.
+There should only be one banner per page. The `header` HTML element exposes the
+banner role by default.
+
+```html
+<header>
+	<!-- banner content goes here -->
+</header>
+```
+
+### Navigation
+
+The `navigation` landmark region is used to identify a collection of links used
+for navigating the site. If you have more than one navigation region (for
+example in the header and the footer), you should give each one an accessible
+name using the `aria-label` or `aria-labelledby` attribute. The `nav` HTML
+element exposes the navigation role by default.
+
+```html
+<nav aria-labelledby="nav-name">
+	<p id="nav-name">Site</p>
+	<!-- navigation links go here -->
+</nav>
+```
+
+<Callout>
+	Screenreaders will append 'navigation' to the accessible name of the
+	`navigation` landmark region, so you don't need to include it in the
+	accessible name yourself. In the example above, a screenreader will annouce
+	"Site navigation".
+</Callout>
+
+### Main
+
+The `main` landmark region is used to identify the primary content of the page.
+There should only be one main region per page, as a direct child of the body.
+The `main` HTML element exposes the main role by default.
+
+```html
+<main>
+	<!-- main content goes here -->
+</main>
+```
+
+### Complementary
+
+The `complementary` landmark region is used to identify secondary content that
+complements (but is not essential to) the main content, such as a sidebar or a
+group of related links. If you have more than one complementary region, you
+should give each one an accessible name using the `aria-label` or
+`aria-labelledby` attribute. The `aside` HTML element exposes the complementary
+role by default.
+
+```html
+<aside aria-labelledby="complementary-name">
+	<p id="complementary-name">Related links</p>
+	<!-- complementary content goes here -->
+</aside>
+```
+
+### Contentinfo
+
+The `contentinfo` landmark region is normally rendered as the site footer, and
+is used to identify information about the page content which is normally
+repeated across pages, such as copyright, privacy information, or contact
+details. There should only be one `contentinfo` region per page. The `footer`
+HTML element exposes the `contentinfo` role by default.
+
+```html
+<footer>
+	<!-- contentinfo content goes here -->
+</footer>
+```
+
+## Other landmark regions
+
+In addition to the core landmark regions, there are a few others which can be
+useful to screenreader users.
+
+### Form
+
+The `form` landmark region is used to identify a group of form elements. The
+HTML `<form>` element will be assigned the `form` role if it has an accessible
+name given to it through an `aria-label` or `aria-labelledby` attribute.
+
+Generally, you don't need to use the `form` landmark region unless it is a
+particularly significant area of the page, and no other landmark region is
+appropriate (e.g. `main` or `search`).
+
+```html
+<form role="form" aria-labelledby="form-name">
+	<p id="form-name">Your form</p>
+	<!-- form elements go here -->
+</form>
+```
+
+### Search
+
+The `search` landmark region is used to identify a section of the page which
+provides some sort of search functionality. This is usually a search form or
+search input field.
+
+There is no HTML element which will automatically be assigned the `search` role,
+so it's normal to add the role to a form element or input field.
+
+```html
+<form role="search" aria-labelledby="search-name">
+	<p id="search-name">Search this site</p>
+	<!-- search elements go here -->
+</form>
+```
+
+### Generic regions
+
+If none of the other landmark regions are appropriate for a section of the page,
+you can use the `region` role to define a generic region.
+
+`<section>` elements will be automatically assigned the `region` role, but only
+if they provide an accessible name using an `aria-label` or `aria-labelledby`
+attribute. A `<section>` element without an accessible name will not be treated
+as a landmark region. The accessible name you provide will be used to identify
+which type of content a user can expect to find in that region. In the same way
+that a screenreader user should know what to expect from a "navigation" region,
+they should be able to know what they'll find in your generic region.
+
+An example of a use case for a generic region might be something like an online
+code editor, where you want to distinguish the area where the code is written
+and the area where the output is displayed. These don't fall into any of the
+existing landmark regions, so a generic region with a descriptive name would be
+a good choice here.
+
+```html
+<section aria-labelledby="region-name">
+	<p id="region-name">Your region</p>
+	<!-- region content goes here -->
+</section>
+```
+
+## Use landmark regions sparingly
+
+Ideally, landmark regions should be used sparingly. As a sighted user, a page
+with an over-complicated visual hierarchy or too many visual landmarks can be
+overwhelming. The same is true for screenreader users. Too many landmark regions
+can end up making a page more difficult to navigate, and ultimately result in a
+worse user experience.
+
+Generally, it's best to include the core landmark regions that you have on your
+page (`banner`, `navigation`, `main`, `complementary`, `contentinfo`) and only
+add additional landmark regions when you're sure they'll add value.
+
+## Conclusion
+
+As a sighted user, building interfaces that work for screenreader users doesn't
+always feel intuitive. But tools like the interactive example above have helped
+me to better understand what it might be like for people using assistive
+technologies to interact with the web. I hope it's been helpful for you too!
